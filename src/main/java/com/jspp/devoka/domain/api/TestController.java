@@ -1,17 +1,19 @@
 package com.jspp.devoka.domain.api;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TestController {
 
-    @RequestMapping("/test")
+    @GetMapping("/test")
     public String test(){
         return "test";
     }
 
-    @RequestMapping("/status")
+    @PostMapping("/status")
     public String status(){
         return "very good";
     }
