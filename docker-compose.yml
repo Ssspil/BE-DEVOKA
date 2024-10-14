@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15  # PostgreSQL 15 버전
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: "0000"  # PostgreSQL 비밀번호 설정
+    ports:
+      - "5432:5432"  # PostgreSQL 포트 매핑
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # 데이터 영속성을 위한 볼륨
+
+  redis:
+    image: redis:7.4.1  # Redis 7.4.1 버전
+    container_name: redis
+    command: redis-server --requirepass 1111  # 비밀번호 설정
+    ports:
+      - "6379:6379"  # Redis 포트 매핑
+    volumes:
+      - redis-data:/data  # 데이터 영속성을 위한 볼륨
+
+volumes:
+  postgres-data:  # PostgreSQL 데이터 볼륨
+  redis-data:  # Redis 데이터 볼륨
