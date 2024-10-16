@@ -27,7 +27,12 @@ spring:
       port: 6379
       password: "1111"
 
+# 스웨거 -v OpenAPI3
+springdoc:
+  swagger-ui:
+    path: /doc
 
+# 로깅
 logging:
   level:
     org:
