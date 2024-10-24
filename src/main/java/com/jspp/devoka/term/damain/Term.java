@@ -42,4 +42,22 @@ public class Term {
 
     @Embedded
     private Auditable auditable;
+
+
+    public Term(String korName, String engName, String abbName, String definition, Category category) {
+        this.korName = korName;
+        this.engName = engName;
+        this.abbName = abbName;
+        this.definition = definition;
+        this.category = category;
+    }
+
+    public Term(Long termNo, String korName, String engName, String abbName, String definition, Category category) {
+        this.termNo = termNo;
+        this.korName = korName;
+        this.engName = engName;
+        this.abbName = abbName;
+        this.definition = definition;
+        this.category = category;
+    }
 }
