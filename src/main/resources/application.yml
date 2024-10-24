@@ -14,13 +14,15 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        default_schema: spring
+        default_schema: devoka
+        format_sql: true
   security:
     jwt:
       secret: "My secret key"
     cors:
       allowed-origins: "http://localhost:3000"
       allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+
 
 # 스웨거 -v OpenAPI3
 springdoc:
@@ -30,9 +32,5 @@ springdoc:
 # 로깅
 logging:
   level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        orm:
-          jdbc:
-            bind: TRACE
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
