@@ -5,7 +5,7 @@ services:
     image: postgres:15  # PostgreSQL 15 버전
     container_name: postgres
     environment:
-      POSTGRES_PASSWORD: "0000"  # PostgreSQL 비밀번호 설정
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"  # PostgreSQL 포트 매핑
     volumes:
