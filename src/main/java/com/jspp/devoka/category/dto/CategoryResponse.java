@@ -23,6 +23,11 @@ public class CategoryResponse {
     private List<CategoryResponse> childList;
 
 
+    /**
+     * 엔티티 -> ResponseDto로 변경
+     * @param categoryEntity
+     * @return
+     */
     public static CategoryResponse fromEntity(Category categoryEntity) {
         CategoryResponseBuilder builder = CategoryResponse.builder()
                 .categoryNo(categoryEntity.getCategoryNo())

@@ -1,5 +1,6 @@
 package com.jspp.devoka.term.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,10 +8,10 @@ import lombok.Getter;
 @Getter
 public class UpdateTermRequest {
 
-    private Long termNo;
     private String korName;
     private String engName;
     private String abbName;
+    @Size(max = 255)
     private String definition;
     private String categoryId;
 
