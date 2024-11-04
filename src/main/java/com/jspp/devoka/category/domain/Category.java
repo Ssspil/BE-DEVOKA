@@ -1,4 +1,4 @@
-package com.jspp.devoka.term.damain;
+package com.jspp.devoka.category.domain;
 
 import com.jspp.devoka.common.domain.Auditable;
 import jakarta.persistence.*;

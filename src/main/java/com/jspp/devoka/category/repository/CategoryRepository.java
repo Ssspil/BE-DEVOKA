@@ -1,13 +1,13 @@
-package com.jspp.devoka.term.repository;
+package com.jspp.devoka.category.repository;
 
-import com.jspp.devoka.term.damain.Category;
+import com.jspp.devoka.category.domain.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface TermCategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByCategoryId(String categoryId);
 }
