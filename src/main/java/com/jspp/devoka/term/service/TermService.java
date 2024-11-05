@@ -111,12 +111,12 @@ public class TermService {
      * @param termNo
      * @return
      */
-//    public TermResponse deleteTerm(Long termNo){
-//
-//        Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 용어 번호입니다."));
-//
-//
-//
-//        return TermResponse.fromEntity(findTerm);
-//    }
+    @Transactional
+    public void deleteTerm(Long termNo){
+
+        // 용어 조회
+        Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 용어 번호입니다."));
+        // 삭제
+        findTerm.delete();
+    }
 }

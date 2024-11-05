@@ -55,11 +55,17 @@ public class Term {
     }
 
 
+    // 엔티티 수정
     public void updateTerm(TermUpdateRequest updateTermRequest, Category category){
         this.korName = updateTermRequest.getKorName();
         this.engName = updateTermRequest.getEngName();
         this.abbName = updateTermRequest.getAbbName();
         this.definition = updateTermRequest.getDefinition();
         this.category = category;
+    }
+
+    // 엔티티 삭제
+    public void delete() {
+        this.deleteYn = "Y";
     }
 }
