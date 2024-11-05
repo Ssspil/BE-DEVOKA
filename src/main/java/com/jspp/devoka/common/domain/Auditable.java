@@ -3,6 +3,7 @@ package com.jspp.devoka.common.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 import java.time.LocalDateTime;
 
@@ -22,8 +23,14 @@ public class Auditable {
 
     @PrePersist
     public void onCreate(){
-        this.createdBy = "SYSTEM";
+        this.createdBy = (createdBy != null) ? createdBy : "SYSTEM";
         this.createdDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate(){
+        this.updatedBy = (updatedBy != null) ? updatedBy : "SYSTEM";
+        this.updatedDate = LocalDateTime.now();
     }
 
 }
