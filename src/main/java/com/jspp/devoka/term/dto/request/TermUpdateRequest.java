@@ -1,12 +1,10 @@
-package com.jspp.devoka.term.dto;
+package com.jspp.devoka.term.dto.request;
 
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
-public class UpdateTermRequest {
+public class TermUpdateRequest {
 
     private String korName;
     private String engName;

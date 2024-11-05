@@ -1,4 +1,4 @@
-package com.jspp.devoka.term.dto;
+package com.jspp.devoka.term.dto.response;
 
 import com.jspp.devoka.category.domain.Category;
 import com.jspp.devoka.term.damain.Term;
@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class TermResponse {
+public class TermUpdateResponse {
 
     private Long termNo;
     private String korName;
@@ -24,11 +24,11 @@ public class TermResponse {
      * @param termEntity
      * @return
      */
-    public static TermResponse fromEntity(Term termEntity){
+    public static TermUpdateResponse fromEntity(Term termEntity){
 
         Category category = termEntity.getCategory();
 
-        TermResponseBuilder builder = TermResponse.builder()
+        TermUpdateResponseBuilder builder = TermUpdateResponse.builder()
                 .termNo(termEntity.getTermNo())
                 .korName(termEntity.getKorName())
                 .engName(termEntity.getEngName())

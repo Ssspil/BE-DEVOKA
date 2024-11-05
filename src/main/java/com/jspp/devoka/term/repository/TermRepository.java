@@ -11,5 +11,9 @@ import java.util.List;
 @Repository
 public interface TermRepository extends JpaRepository<Term, Long> {
 
+    // 용어 Like 검색 조회
     Page<Term> findByKorNameContainingOrEngNameContainingOrAbbNameContaining(String korName, String engName, String abbName, Pageable pageable);
+
+    // 카테고리 별 용어 목록 조회
+    Page<Term> findByCategory_CategoryId(String categoryId, Pageable pageable);
 }

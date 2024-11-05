@@ -3,10 +3,13 @@ package com.jspp.devoka.term.service;
 
 import com.jspp.devoka.category.domain.Category;
 import com.jspp.devoka.term.damain.Term;
-import com.jspp.devoka.term.dto.CreateTermRequest;
-import com.jspp.devoka.term.dto.TermResponse;
-import com.jspp.devoka.term.dto.UpdateTermRequest;
+import com.jspp.devoka.term.dto.request.TermCreateRequest;
+import com.jspp.devoka.term.dto.response.TermCreateResponse;
+import com.jspp.devoka.term.dto.response.TermListResponse;
+import com.jspp.devoka.term.dto.request.TermUpdateRequest;
 import com.jspp.devoka.category.repository.CategoryRepository;
+import com.jspp.devoka.term.dto.response.TermSearchResponse;
+import com.jspp.devoka.term.dto.response.TermUpdateResponse;
 import com.jspp.devoka.term.repository.TermRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +25,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class TermService {
 
     private final TermRepository termRepository;
@@ -33,16 +35,15 @@ public class TermService {
      * @param termRequest
      * @return
      */
-    public TermResponse createTerm(CreateTermRequest termRequest){
+    public TermCreateResponse createTerm(TermCreateRequest termRequest){
 
         // 카테고리 조회
         Category findCategory = termCategoryRepository.findByCategoryId(termRequest.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
 
         // 용어 저장
-        Term term = new Term(termRequest.getKorName(), termRequest.getEngName(), termRequest.getAbbName(), termRequest.getDefinition(), findCategory);
-        Term saveTerm = termRepository.save(term);
+        Term saveTerm = termRepository.save(termRequest.toEntity(findCategory));
 
-        return TermResponse.fromEntity(saveTerm);
+        return TermCreateResponse.fromEntity(saveTerm);
     }
 
     /**
@@ -52,7 +53,7 @@ public class TermService {
      * @param size
      * @return
      */
-    public List<TermResponse> searchTerm(String keyword, int page, int size) {
+    public List<TermSearchResponse> searchTerm(String keyword, int page, int size) {
 
         // 페이징 처리
         Pageable pageable = PageRequest.of(page, size);
@@ -61,7 +62,7 @@ public class TermService {
         Page<Term> findPageTerm = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContaining(keyword, keyword, keyword, pageable);
         List<Term> content = findPageTerm.getContent();
 
-        return content.stream().map(TermResponse::fromEntity).toList();
+        return content.stream().map(TermSearchResponse::fromEntity).toList();
     }
 
     /**
@@ -70,15 +71,18 @@ public class TermService {
      * @param size
      * @return
      */
-    public List<TermResponse> getTermList(int page, int size) {
+    public List<TermListResponse> getTermList(int page, int size, String categoryId) {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Term> findTermPage = termRepository.findAll(pageable);
+        Page<Term> findTermPage = (categoryId == null || categoryId.isEmpty())
+                ? termRepository.findAll(pageable)
+                : termRepository.findByCategory_CategoryId(categoryId, pageable);
+
         List<Term> content = findTermPage.getContent();
 
         // Term 리스트를 TermResponse로 변환하여 반환
-        return content.stream().map(TermResponse::fromEntity).toList();
+        return content.stream().map(TermListResponse::fromEntity).toList();
     }
 
     /**
@@ -87,27 +91,19 @@ public class TermService {
      * @param termRequest
      * @return
      */
-    public TermResponse updateTerm(Long termNo, UpdateTermRequest termRequest) {
+    @Transactional
+    public TermUpdateResponse updateTerm(Long termNo, TermUpdateRequest termRequest) {
 
+        // 용어 조회
         Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 용어 번호입니다."));
 
         // 카테고리 ID로 카테고리 조회
         Optional<Category> optionalCategory = termCategoryRepository.findByCategoryId(termRequest.getCategoryId());
         Category updatedCategory = optionalCategory.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
 
+        findTerm.updateTerm(termRequest, updatedCategory);
 
-        Term updatedTerm = new Term(
-                findTerm.getTermNo(), // 기존 ID 유지
-                termRequest.getKorName() != null && !termRequest.getKorName().isEmpty() ? termRequest.getKorName() : findTerm.getKorName(),
-                termRequest.getEngName() != null && !termRequest.getEngName().isEmpty() ? termRequest.getEngName() : findTerm.getEngName(),
-                termRequest.getAbbName() != null && !termRequest.getAbbName().isEmpty() ? termRequest.getAbbName() : findTerm.getAbbName(),
-                termRequest.getDefinition() != null && !termRequest.getDefinition().isEmpty() ? termRequest.getDefinition() : findTerm.getDefinition(),
-                updatedCategory // 카테고리 업데이트
-        );
-
-        Term saveTerm = termRepository.save(updatedTerm);
-
-        return TermResponse.fromEntity(saveTerm);
+        return TermUpdateResponse.fromEntity(findTerm);
     }
 
     /**
@@ -115,12 +111,12 @@ public class TermService {
      * @param termNo
      * @return
      */
-    public TermResponse deleteTerm(Long termNo){
-
-        Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 용어 번호입니다."));
-
-
-
-        return TermResponse.fromEntity(findTerm);
-    }
+//    public TermResponse deleteTerm(Long termNo){
+//
+//        Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 용어 번호입니다."));
+//
+//
+//
+//        return TermResponse.fromEntity(findTerm);
+//    }
 }
