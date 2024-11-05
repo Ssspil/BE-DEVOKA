@@ -41,7 +41,7 @@ public class TermController {
     @GetMapping("/all")
     public ResponseEntity<List<TermListResponse>> getTermList(@RequestParam(name = "page", defaultValue = "0") int page,
                                                               @RequestParam(name = "size", defaultValue = "10") int size,
-                                                              @RequestParam(name = "categoryId", required = false) String categoryId){
+        @Parameter(description = "해당 카테고리에 있는 목록조회") @RequestParam(name = "categoryId", required = false) String categoryId){
         List<TermListResponse> termList = termService.getTermList(page, size, categoryId);
 
         return ResponseEntity.ok().body(termList);
