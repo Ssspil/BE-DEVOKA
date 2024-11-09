@@ -59,7 +59,7 @@ public class TermService {
         Pageable pageable = PageRequest.of(page, size);
 
         // LIKE 검색 + 페이징 처리된 결과를 가져옴
-        Page<Term> findPageTerm = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContaining(keyword, keyword, keyword, pageable);
+        Page<Term> findPageTerm = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingAndDeleteYn(keyword, keyword, keyword, pageable, "N");
         List<Term> content = findPageTerm.getContent();
 
         return content.stream().map(TermSearchResponse::fromEntity).toList();
@@ -76,8 +76,8 @@ public class TermService {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Term> findTermPage = (categoryId == null || categoryId.isEmpty())
-                ? termRepository.findAll(pageable)
-                : termRepository.findByCategory_CategoryId(categoryId, pageable);
+                ? termRepository.findAllByDeleteYn("N", pageable)
+                : termRepository.findByCategory_CategoryIdAndDeleteYn(categoryId, "N", pageable);
 
         List<Term> content = findTermPage.getContent();
 

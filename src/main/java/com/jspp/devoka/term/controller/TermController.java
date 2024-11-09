@@ -103,7 +103,7 @@ public class TermController {
 
     @Operation(summary = "용어 삭제", description = "용어를 삭제합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "용어 삭제 성공",
+            @ApiResponse(responseCode = "204", description = "용어 삭제 성공",
                     content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(schema = @Schema(hidden = true))),
