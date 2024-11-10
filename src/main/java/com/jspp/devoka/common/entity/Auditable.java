@@ -1,4 +1,4 @@
-package com.jspp.devoka.common.domain;
+package com.jspp.devoka.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
