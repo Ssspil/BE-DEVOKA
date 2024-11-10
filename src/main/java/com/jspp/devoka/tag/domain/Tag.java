@@ -1,6 +1,6 @@
 package com.jspp.devoka.tag.domain;
 
-import com.jspp.devoka.common.domain.Auditable;
+import com.jspp.devoka.common.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

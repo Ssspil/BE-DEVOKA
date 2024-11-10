@@ -1,6 +1,6 @@
 package com.jspp.devoka.category.domain;
 
-import com.jspp.devoka.common.domain.Auditable;
+import com.jspp.devoka.common.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 

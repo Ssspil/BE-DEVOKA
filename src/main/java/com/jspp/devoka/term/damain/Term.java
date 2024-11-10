@@ -1,7 +1,7 @@
 package com.jspp.devoka.term.damain;
 
 import com.jspp.devoka.category.domain.Category;
-import com.jspp.devoka.common.domain.Auditable;
+import com.jspp.devoka.common.entity.Auditable;
 import com.jspp.devoka.term.dto.request.TermUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
