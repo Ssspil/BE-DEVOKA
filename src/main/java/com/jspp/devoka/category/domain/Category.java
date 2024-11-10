@@ -28,7 +28,7 @@ public class Category {
     private Category parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Category> childCategories = new ArrayList<>();
+    private List<Category> subCategories = new ArrayList<>();
 
     @Column(name = "depth")
     private Integer depth;

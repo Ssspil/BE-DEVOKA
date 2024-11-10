@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class CategoryResponse {
+public class CategoryListResponse {
 
     private Long categoryNo;
     private String categoryId;
     private String categoryName;
     private Integer sortOrder;
     private Integer depth;
-    private List<CategoryResponse> childList;
+    private List<CategoryListResponse> subCategoryList;
 
 
     /**
@@ -28,19 +28,19 @@ public class CategoryResponse {
      * @param categoryEntity
      * @return
      */
-    public static CategoryResponse fromEntity(Category categoryEntity) {
-        CategoryResponseBuilder builder = CategoryResponse.builder()
+    public static CategoryListResponse fromEntity(Category categoryEntity) {
+        CategoryListResponseBuilder builder = CategoryListResponse.builder()
                 .categoryNo(categoryEntity.getCategoryNo())
                 .categoryId(categoryEntity.getCategoryId())
                 .categoryName(categoryEntity.getCategoryName())
                 .sortOrder(categoryEntity.getSortOrder())
                 .depth(categoryEntity.getDepth());
 
-        if(categoryEntity.getChildCategories() != null) {
-            List<CategoryResponse> childList = categoryEntity.getChildCategories().stream()
-                    .map(CategoryResponse::fromEntity)
+        if(categoryEntity.getSubCategories() != null) {
+            List<CategoryListResponse> childList = categoryEntity.getSubCategories().stream()
+                    .map(CategoryListResponse::fromEntity)
                     .collect(Collectors.toList());
-            builder.childList(childList);
+            builder.subCategoryList(childList);
         }
 
         return builder.build();
