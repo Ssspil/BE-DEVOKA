@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,6 +34,7 @@ public class TermService {
      * 카테고리별 용어 목록 조회
      * @param page
      * @param size
+     * @param categoryId
      * @return
      */
     public TermListResponse getTermListByCategory(int page, int size, String categoryId) {
@@ -65,25 +68,47 @@ public class TermService {
         return TermCreateResponse.fromEntity(saveTerm);
     }
 
+
     /**
      * 용어 검색
      * @param keyword
-     * @param page
-     * @param size
      * @return
      */
-    public List<TermSearchResponse> searchTerm(String keyword, int page, int size) {
+    public List<TermSearchResponse> searchTerm(String keyword) {
 
-        // 페이징 처리
-        Pageable pageable = PageRequest.of(page, size);
-
-        // LIKE 검색 + 페이징 처리된 결과를 가져옴
+        // LIKE 검색 결과를 가져옴
         // TODO 관리자가 승인 한 것만 노출 되도록 수정
-        Page<Term> findPageTerm = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingAndDeleteYn(keyword, keyword, keyword, pageable, "N");
-        List<Term> content = findPageTerm.getContent();
+        // TODO 엘라스틱 서치로 변경
+        List<Term> findTermList = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingAndDeleteYn(keyword, keyword, keyword, "N");
 
-        return content.stream().map(TermSearchResponse::fromEntity).toList();
+        // basic Term response Dto 데이터로 변환
+        List<TermResponse> termList = findTermList.stream().map(TermResponse::fromEntity).toList();
+
+        // 카테고리 별로 그룹화
+        Map<String, List<TermResponse>> groupedByCategoryId = termList.stream().collect(Collectors.groupingBy(TermResponse::getCategoryId));
+
+        // TermSearchResponse 리스트 생성
+        List<TermSearchResponse> termSearchResponseList = groupedByCategoryId.entrySet().stream()
+                .map(entry -> {
+                    log.info("이거다 : {}", entry);
+                    String categoryId = entry.getKey();
+                    List<TermResponse> dataList = entry.getValue();
+
+                    // 카테고리명은 첫 번째 항목의 categoryName을 사용
+                    String categoryName = dataList.isEmpty() ? null : dataList.get(0).getCategoryName();
+
+                    TermSearchResponse response = new TermSearchResponse();
+                    response.setCategoryId(categoryId);
+                    response.setCategoryName(categoryName);
+                    response.setData(dataList);
+                    return response;
+                })
+                .sorted((o1, o2) -> Integer.compare(o2.getData().size(), o1.getData().size())) // 데이터 수에 따른 내림차순 정렬
+                .toList();
+
+        return termSearchResponseList;
     }
+
 
     /**
      * 용어 수정
@@ -104,6 +129,7 @@ public class TermService {
 
         return TermUpdateResponse.fromEntity(findTerm);
     }
+
 
     /**
      * 용어 삭제

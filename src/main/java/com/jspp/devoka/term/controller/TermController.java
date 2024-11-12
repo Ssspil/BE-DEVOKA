@@ -79,11 +79,9 @@ public class TermController {
                     content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping("/search")
-    public ResponseEntity<CommonApiResponse<List<TermSearchResponse>>> searchTerm(@Parameter(description = "검색할 용어", required = true) @RequestParam(name = "keyword") String keyword,
-                                                               @RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "10") int size){
+    public ResponseEntity<CommonApiResponse<List<TermSearchResponse>>> searchTerm(@Parameter(description = "검색할 용어", required = true) @RequestParam(name = "keyword") String keyword){
 
-        List<TermSearchResponse> termList = termService.searchTerm(keyword, page, size);
+        List<TermSearchResponse> termList = termService.searchTerm(keyword);
         CommonApiResponse<List<TermSearchResponse>> response = CommonApiResponse.success(termList, DataType.Object);
         return ResponseEntity.ok().body(response);
     }
