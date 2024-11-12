@@ -48,7 +48,7 @@ public class TermService {
         List<TermResponse> list = content.stream().map(TermResponse::fromEntity).toList();
 
         // Term 리스트를 TermResponse로 변환하여 반환
-        return new TermListResponse(category.getCategoryId(), category.getCategoryName(), list);
+        return TermListResponse.of(category.getCategoryId(), category.getCategoryName(), list);
     }
 
 
@@ -74,39 +74,28 @@ public class TermService {
      * @param keyword
      * @return
      */
+    @Transactional
     public List<TermSearchResponse> searchTerm(String keyword) {
 
         // LIKE 검색 결과를 가져옴
         // TODO 관리자가 승인 한 것만 노출 되도록 수정
         // TODO 엘라스틱 서치로 변경
-        List<Term> findTermList = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingAndDeleteYn(keyword, keyword, keyword, "N");
-
-        // basic Term response Dto 데이터로 변환
-        List<TermResponse> termList = findTermList.stream().map(TermResponse::fromEntity).toList();
+        List<Term> findList = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingAndDeleteYn(keyword, keyword, keyword, "N");
 
         // 카테고리 별로 그룹화
-        Map<String, List<TermResponse>> groupedByCategoryId = termList.stream().collect(Collectors.groupingBy(TermResponse::getCategoryId));
+        Map<Category, List<Term>> termListGroupByCategoryId = findList.stream().collect(Collectors.groupingBy(Term::getCategory));
 
-        // TermSearchResponse 리스트 생성
-        List<TermSearchResponse> termSearchResponseList = groupedByCategoryId.entrySet().stream()
-                .map(entry -> {
-                    log.info("이거다 : {}", entry);
-                    String categoryId = entry.getKey();
-                    List<TermResponse> dataList = entry.getValue();
+        // TermSearchResponse 리스트 생성 및 정렬
+        return termListGroupByCategoryId.entrySet().stream()
+                .map(group -> {
+                    Category category = group.getKey();
+                    List<Term> termList = group.getValue();
 
-                    // 카테고리명은 첫 번째 항목의 categoryName을 사용
-                    String categoryName = dataList.isEmpty() ? null : dataList.get(0).getCategoryName();
-
-                    TermSearchResponse response = new TermSearchResponse();
-                    response.setCategoryId(categoryId);
-                    response.setCategoryName(categoryName);
-                    response.setData(dataList);
-                    return response;
+                    List<TermResponse> list = termList.stream().map(TermResponse::fromEntity).toList();
+                    return TermSearchResponse.of(category.getCategoryId(), category.getCategoryName(), list);
                 })
-                .sorted((o1, o2) -> Integer.compare(o2.getData().size(), o1.getData().size())) // 데이터 수에 따른 내림차순 정렬
+                .sorted((e1, e2) -> e2.getData().size() - e1.getData().size()) // 데이터 수에 따른 내림차순 정렬
                 .toList();
-
-        return termSearchResponseList;
     }
 
 

@@ -1,17 +1,19 @@
 package com.jspp.devoka.term.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-@Builder
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class TermSearchResponse {
 
     private String categoryId;
     private String categoryName;
     private List<TermResponse> data;
+
+    public static TermSearchResponse of(String categoryId, String categoryName, List<TermResponse> data){
+        return new TermSearchResponse(categoryId, categoryName, data);
+    }
 }

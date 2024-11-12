@@ -12,4 +12,8 @@ public class TermListResponse {
     private String categoryId;
     private String categoryName;
     private List<TermResponse> data;
+
+    public static TermListResponse of(String categoryId, String categoryName, List<TermResponse> data){
+        return new TermListResponse(categoryId, categoryName, data);
+    }
 }
