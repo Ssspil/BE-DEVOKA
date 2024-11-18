@@ -2,7 +2,9 @@ package com.jspp.devoka.category.service;
 
 import com.jspp.devoka.category.domain.Category;
 import com.jspp.devoka.category.dto.CategoryListResponse;
+import com.jspp.devoka.category.exception.CategoryNotFoundException;
 import com.jspp.devoka.category.repository.CategoryRepository;
+import com.jspp.devoka.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -48,6 +51,6 @@ public class CategoryService {
      */
     public Category findByCategoryId(String categoryId){
         // 카테고리 조회
-        return categoryRepository.findByCategoryId(categoryId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+        return categoryRepository.findByCategoryId(categoryId).orElseThrow(() -> new CategoryNotFoundException(ErrorCode.NOT_FOUND_CATEGORY));
     }
 }

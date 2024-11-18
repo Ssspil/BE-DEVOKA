@@ -3,9 +3,9 @@ package com.jspp.devoka.term.exception;
 import com.jspp.devoka.common.exception.BusinessException;
 import com.jspp.devoka.common.exception.ErrorCode;
 
-public class TermException extends BusinessException {
+public class TermNotFoundException extends BusinessException {
 
-    public TermException(ErrorCode errorCode) {
+    public TermNotFoundException(ErrorCode errorCode) {
         super(errorCode);
     }
 }

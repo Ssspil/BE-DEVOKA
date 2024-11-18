@@ -45,6 +45,7 @@ public class Term {
     @Embedded
     private Auditable auditable;
 
+    // 엔티티 생성 때 Default 값
     @PrePersist
     public void onCreate(){
         this.approvalYn = "N";

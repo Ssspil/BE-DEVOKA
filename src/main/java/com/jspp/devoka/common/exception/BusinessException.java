@@ -12,13 +12,4 @@ public abstract class BusinessException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public BusinessException(ErrorCode errorCode, Throwable throwable) {
-        super(errorCode.getMessage(), throwable);
-        this.errorCode = errorCode;
-    }
-
-    public BusinessException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
-    }
 }

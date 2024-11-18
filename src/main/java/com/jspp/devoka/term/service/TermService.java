@@ -3,10 +3,12 @@ package com.jspp.devoka.term.service;
 
 import com.jspp.devoka.category.domain.Category;
 import com.jspp.devoka.category.service.CategoryService;
+import com.jspp.devoka.common.exception.ErrorCode;
 import com.jspp.devoka.term.damain.Term;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
 import com.jspp.devoka.term.dto.response.*;
 import com.jspp.devoka.term.dto.request.TermUpdateRequest;
+import com.jspp.devoka.term.exception.TermNotFoundException;
 import com.jspp.devoka.term.repository.TermRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +111,7 @@ public class TermService {
     public TermUpdateResponse updateTerm(Long termNo, TermUpdateRequest termRequest) {
 
         // 용어 조회
-        Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 용어 번호입니다."));
+        Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new TermNotFoundException(ErrorCode.NOT_FOUND_TERM));
 
         // 카테고리 ID로 카테고리 조회
         Category updateCategory = categoryService.findByCategoryId(termRequest.getCategoryId());
@@ -129,7 +131,7 @@ public class TermService {
     public void deleteTerm(Long termNo){
 
         // 용어 조회
-        Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 용어 번호입니다."));
+        Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new TermNotFoundException(ErrorCode.NOT_FOUND_TERM));
         // 삭제
         findTerm.delete();
     }
