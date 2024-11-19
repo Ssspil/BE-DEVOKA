@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<CommonApiResponse<Void>> categoryNotFoundException(CategoryNotFoundException e){
         log.error("카테고리 예외 발생 : [{}]  {}", e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
-        CommonApiResponse<Void> response = CommonApiResponse.failure(e.getErrorCode().getMessage());
+        CommonApiResponse<Void> response = CommonApiResponse.failure(e.getErrorCode());
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
     }
 
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TermNotFoundException.class)
     public ResponseEntity<CommonApiResponse<Void>> termNotFoundException(TermNotFoundException e) {
         log.error("용어 조회 예외 발생 : [{}]  {}", e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
-        CommonApiResponse<Void> response = CommonApiResponse.failure(e.getErrorCode().getMessage());
+        CommonApiResponse<Void> response = CommonApiResponse.failure(e.getErrorCode());
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
     }
 
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonApiResponse<Void>> allException(Exception e) {
         log.error("Exception : {}", e.getMessage(), e);
-        CommonApiResponse<Void> response = CommonApiResponse.failure(ErrorCode.SERVER_ERROR.getMessage());
+        CommonApiResponse<Void> response = CommonApiResponse.failure(ErrorCode.SERVER_ERROR);
         return ResponseEntity.status(ErrorCode.SERVER_ERROR.getStatus()).body(response);
     }
 }

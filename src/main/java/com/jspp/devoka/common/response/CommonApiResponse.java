@@ -1,6 +1,7 @@
 package com.jspp.devoka.common.response;
 
 
+import com.jspp.devoka.common.exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,11 +34,23 @@ public class CommonApiResponse<T> {
         return new CommonApiResponse<>(header, data);
     }
 
-    public static <T> CommonApiResponse<T> failure(String errorMsg){
+    // 비즈니스 로직 예외처리
+    public static <T> CommonApiResponse<T> failure(ErrorCode error){
         // 응답 헤더 생성
         ResponseHeader header = new ResponseHeader.ResponseHeaderBuilder()
-                .resultCode("-1")
-                .message(errorMsg)
+                .resultCode(error.getCode())
+                .message(error.getMessage())
+                .dataType(null).build();
+
+        return new CommonApiResponse<>(header, null);
+    }
+
+    // 유효성 체크할 때 메시지만 내려줄 때
+    public static <T> CommonApiResponse<T> failure(String msg){
+        // 응답 헤더 생성
+        ResponseHeader header = new ResponseHeader.ResponseHeaderBuilder()
+                .resultCode(ErrorCode.INVALID_INPUT_VALUE.getCode())
+                .message(msg)
                 .dataType(null).build();
 
         return new CommonApiResponse<>(header, null);
