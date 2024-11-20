@@ -2,7 +2,8 @@ name: Run Tests on Dev Branch with Gradle
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: 
+      - dev
 
 jobs:
   test:
