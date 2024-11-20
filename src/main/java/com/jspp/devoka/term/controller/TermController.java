@@ -82,7 +82,7 @@ public class TermController {
     public ResponseEntity<CommonApiResponse<List<TermSearchResponse>>> searchTerm(@Parameter(description = "검색할 용어") @RequestParam(name = "keyword") String keyword){
 
         List<TermSearchResponse> termList = termService.searchTerm(keyword);
-        CommonApiResponse<List<TermSearchResponse>> response = CommonApiResponse.success(termList, DataType.Object);
+        CommonApiResponse<List<TermSearchResponse>> response = CommonApiResponse.success(termList, DataType.Array);
         return ResponseEntity.ok().body(response);
     }
 
