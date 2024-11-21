@@ -43,7 +43,7 @@ logging:
     org.hibernate.orm.jdbc.bind: trace
 
 ---
-
+# 테스트
 # ===============================
 # prod Profile 설정
 # ===============================
