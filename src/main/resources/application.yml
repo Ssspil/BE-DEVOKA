@@ -43,31 +43,31 @@ logging:
     org.hibernate.orm.jdbc.bind: trace
 
 ---
-
+# 테스트
 # ===============================
 # prod Profile 설정
 # ===============================
-spring:
-  config:
-    activate:
-      on-profile: prod
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_PASSWORD}
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-#    show-sql: true
-    database: postgresql
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        default_schema: devoka
-        format_sql: true
-  security:
-    jwt:
-      secret: ${JWT_SECRET_KEY}
-    cors:
-      allowed-origins: ${CORS_ALLOW_ORIGIN}
-      allowed-methods: ${CORS_ALLOW_METHOD}
+#spring:
+#  config:
+#    activate:
+#      on-profile: prod
+#  datasource:
+#    url: ${DB_URL}
+#    username: ${DB_PASSWORD}
+#    password: ${DB_PASSWORD}
+#    driver-class-name: org.postgresql.Driver
+#  jpa:
+##    show-sql: true
+#    database: postgresql
+#    hibernate:
+#      ddl-auto: none
+#    properties:
+#      hibernate:
+#        default_schema: devoka
+#        format_sql: true
+#  security:
+#    jwt:
+#      secret: ${JWT_SECRET_KEY}
+#    cors:
+#      allowed-origins: ${CORS_ALLOW_ORIGIN}
+#      allowed-methods: ${CORS_ALLOW_METHOD}
