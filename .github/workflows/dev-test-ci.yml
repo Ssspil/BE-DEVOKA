@@ -1,0 +1,32 @@
+name: Run Tests on Dev Branch with Gradle
+
+on:
+  push:
+    branches: 
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 레파지토리 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Java 설치
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3. 빌드 (의존성 설치 포함)
+      - name: Build Project
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      # 4. 테스트 실행
+      - name: Run Tests
+        run: ./gradlew test
