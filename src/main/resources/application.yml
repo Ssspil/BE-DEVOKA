@@ -43,7 +43,6 @@ logging:
     org.hibernate.orm.jdbc.bind: trace
 
 ---
-
 # ===============================
 # prod Profile 설정
 # ===============================
@@ -53,7 +52,7 @@ spring:
       on-profile: prod
   datasource:
     url: ${DB_URL}
-    username: ${DB_PASSWORD}
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
