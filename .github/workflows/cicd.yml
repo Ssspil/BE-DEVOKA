@@ -24,7 +24,6 @@ jobs:
   deploy:
     if: github.ref == 'refs/heads/main' # main 브런치 일 때만 실행
     runs-on: ubuntu-latest
-    environment: prod
     steps:
       -    name: Checkout
            uses: actions/checkout@v4
