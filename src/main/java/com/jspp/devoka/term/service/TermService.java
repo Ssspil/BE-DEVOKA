@@ -4,6 +4,8 @@ package com.jspp.devoka.term.service;
 import com.jspp.devoka.category.domain.Category;
 import com.jspp.devoka.category.service.CategoryService;
 import com.jspp.devoka.common.exception.ErrorCode;
+import com.jspp.devoka.history.domain.SearchHistory;
+import com.jspp.devoka.history.service.SearchHistoryService;
 import com.jspp.devoka.term.damain.Term;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
 import com.jspp.devoka.term.dto.response.*;
@@ -30,6 +32,8 @@ public class TermService {
     private final TermRepository termRepository;
 
     private final CategoryService categoryService;
+
+    private final SearchHistoryService searchHistoryService;
 
 
     /**
@@ -82,13 +86,13 @@ public class TermService {
         // LIKE 검색 결과를 가져옴
         // TODO 관리자가 승인 한 것만 노출 되도록 수정
         // TODO 엘라스틱 서치로 변경
-        List<Term> findList = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingAndDeleteYn(keyword, keyword, keyword, "N");
+        List<Term> findList = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingOrDefinitionContainingAndDeleteYn(keyword, keyword, keyword, keyword, "N");
 
         // 카테고리 별로 그룹화
         Map<Category, List<Term>> termListGroupByCategoryId = findList.stream().collect(Collectors.groupingBy(Term::getCategory));
 
         // TermSearchResponse 리스트 생성 및 정렬
-        return termListGroupByCategoryId.entrySet().stream()
+        List<TermSearchResponse> responseData =  termListGroupByCategoryId.entrySet().stream()
                 .map(group -> {
                     Category category = group.getKey();
                     List<Term> termList = group.getValue();
@@ -98,6 +102,12 @@ public class TermService {
                 })
                 .sorted((e1, e2) -> e2.getData().size() - e1.getData().size()) // 데이터 수에 따른 내림차순 정렬
                 .toList();
+
+
+        // 검색 이력
+        searchHistoryService.save(SearchHistory.create(keyword, responseData));
+
+        return responseData;
     }
 
 
