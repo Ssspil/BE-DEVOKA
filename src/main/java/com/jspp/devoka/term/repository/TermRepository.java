@@ -12,7 +12,7 @@ import java.util.List;
 public interface TermRepository extends JpaRepository<Term, Long> {
 
     // 용어 Like 검색 조회
-    List<Term> findByKorNameContainingOrEngNameContainingOrAbbNameContainingAndDeleteYn(String keyword, String keyword1, String keyword2, String deleteYn);
+    List<Term> findByKorNameContainingOrEngNameContainingOrAbbNameContainingOrDefinitionContainingAndDeleteYn(String korName, String engName, String abbName, String definition, String deleteYn);
 
     // 카테고리 별 용어 목록 조회
     Page<Term> findByCategory_CategoryIdAndDeleteYn(String categoryId, String deleteYn, Pageable pageable);
