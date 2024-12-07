@@ -49,3 +49,5 @@ jobs:
              export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
              
              /home/ubuntu/deploy.sh
+
+             echo "완료"
