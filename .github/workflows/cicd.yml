@@ -50,4 +50,3 @@ jobs:
              
              /home/ubuntu/deploy.sh
 
-             echo "완료"
