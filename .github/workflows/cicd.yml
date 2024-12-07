@@ -40,11 +40,17 @@ jobs:
              java-version: '17'
              distribution: 'temurin'
              
+      -    name: Change Directory
+           run: | 
+             cd ~
+               echo "변경 후 현재 작업 디렉토리:"
+               pwd
+           
       -    name: Grant execute permission for deploy.sh
-           run: chmod +x /home/ubuntu/deploy.sh
+           run: chmod +x ./deploy.sh
            
       -    name: Run deploy script
-           run: /home/ubuntu/deploy.sh
+           run: ./deploy.sh
 
            
 
