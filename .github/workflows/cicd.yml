@@ -28,28 +28,40 @@ jobs:
     steps:
       -    name: Checkout
            uses: actions/checkout@v4
-        
+
+      -    name: Print working directory
+           run: |
+              echo "현재 작업 디렉토리:"
+              pwd
+
       -    name: Set up JDK 17
            uses: actions/setup-java@v4
            with:
              java-version: '17'
              distribution: 'temurin'
-      -    name: Stop Existing Application (if running)
-           run: |
-             pkill -f '/home/ubuntu/project/devoka-0.0.1-SNAPSHOT.jar' || true
-             echo '서버죽이기 완료'
+             
+      -    name: Grant execute permission for deploy.sh
+           run: chmod +x ./deploy.sh
+           
+      -    name: Run deploy script
+           run: ./deploy.sh
+
+           
+
+      # -    name: Stop Existing Application (if running)
+      #      run: |
+      #        pkill -f '/home/ubuntu/project/devoka-0.0.1-SNAPSHOT.jar' || true
+      #        echo '서버죽이기 완료'
             
-      -    name: Grant execute permission for gradlew
-           run: chmod +x gradlew
+      # -    name: Grant execute permission for gradlew
+      #      run: chmod +x gradlew
 
-      -    name: Build with Gradle
-           run: ./gradlew build --no-daemon
+      # -    name: Build with Gradle
+      #      run: ./gradlew build --no-daemon
 
-      # -    name: Grant execute permission for deploy.sh
-      #      run: chmod +x ./deploy.sh
+
     
-      # -    name: Run deploy script
-      #      run: ./deploy.sh
+
 
       # -    name: Copy JAR file to EC2
       #      uses: appleboy/scp-action@master
@@ -74,8 +86,8 @@ jobs:
       #          nohup java -jar -Dspring.profiles.active=prod devoka-0.0.1-SNAPSHOT.jar &
 
 
-      -    name: Start Application
-           run: |
-             nohup java -jar -Dspring.profiles.active=prod -Duser.timezone=Asia/Seoul /home/ubuntu/project/devoka-0.0.1-SNAPSHOT.jar &
-             echo '서버실행 완료'
+      # -    name: Start Application
+      #      run: |
+      #        nohup java -jar -Dspring.profiles.active=prod -Duser.timezone=Asia/Seoul /home/ubuntu/project/devoka-0.0.1-SNAPSHOT.jar &
+      #        echo '서버실행 완료'
   
