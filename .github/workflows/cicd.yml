@@ -41,10 +41,10 @@ jobs:
              distribution: 'temurin'
              
       -    name: Grant execute permission for deploy.sh
-           run: chmod +x ./deploy.sh
+           run: chmod +x /home/ubuntu/deploy.sh
            
       -    name: Run deploy script
-           run: ./deploy.sh
+           run: /home/ubuntu/deploy.sh
 
            
 
