@@ -40,18 +40,13 @@ jobs:
              java-version: '17'
              distribution: 'temurin'
              
-      -    name: Change Directory
+      -    name: Change Directory AND Run deploy script
            run: | 
              cd ~
-               echo "변경 후 현재 작업 디렉토리:"
-               pwd
-           
-      -    name: Grant execute permission for deploy.sh
-           run: chmod +x ./deploy.sh
-           
-      -    name: Run deploy script
-           run: ./deploy.sh
-
+             echo "변경 후 현재 작업 디렉토리:"
+             pwd
+             chmod +x ./deploy.sh
+             ./deploy.sh
            
 
       # -    name: Stop Existing Application (if running)
