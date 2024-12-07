@@ -29,11 +29,6 @@ jobs:
       -    name: Checkout
            uses: actions/checkout@v4
 
-      -    name: Print working directory
-           run: |
-              echo "현재 작업 디렉토리:"
-              pwd
-
       -    name: Set up JDK 17
            uses: actions/setup-java@v4
            with:
@@ -42,11 +37,10 @@ jobs:
              
       -    name: Change Directory AND Run deploy script
            run: | 
-             cd ~
-             echo "변경 후 현재 작업 디렉토리:"
+             echo "현재 작업 디렉토리 : "
              pwd
              
-             chmod +x ./deploy.sh
+             chmod +x /home/ubuntu/deploy.sh
              export DB_URL=${{ secrets.DB_URL }}
              export DB_USERNAME=${{ secrets.DB_USERNAME }}
              export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
@@ -54,4 +48,4 @@ jobs:
              export CORS_ALLOW_METHOD=${{ secrets.CORS_ALLOW_METHOD }}
              export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
              
-             ./deploy.sh
+             /home/ubuntu/deploy.sh
