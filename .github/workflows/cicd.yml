@@ -54,12 +54,6 @@ jobs:
              tail -n 50 /home/ubuntu/project/test/app.log
 
              echo "애플리케이션 상태 확인:"
-             curl -I http://localhost:8080 || echo "Application is not responding!"
+             curl http://localhost:8080 || echo "Application is not responding!"
 
-      # -    name: Check Application Logs
-      #      run: |
-
-
-      # -   name: Test Application
-      #     run: |
             
