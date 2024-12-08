@@ -31,7 +31,7 @@ dependencies {
 
 
 	// Spring Data Elasticsearch
-	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+//	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
 	// Postgre
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.1'
