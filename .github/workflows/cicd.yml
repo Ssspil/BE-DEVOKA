@@ -51,6 +51,9 @@ jobs:
              /home/ubuntu/deploy.sh
 
              echo "최근 애플리케이션 로그 확인:"
-             tail -n 150 /home/ubuntu/project/test/app.log
+             tail -n 150 /home/ubuntu/project/app.log
 
-            
+      -    name: log check2
+           run: |
+             echo "두번째 로그"
+             tail -n 150 /home/ubuntu/project/app.log
