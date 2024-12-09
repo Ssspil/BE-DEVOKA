@@ -51,9 +51,6 @@ jobs:
              /home/ubuntu/deploy.sh
 
              echo "최근 애플리케이션 로그 확인:"
-             tail -n 50 /home/ubuntu/project/test/app.log
-
-             echo "애플리케이션 상태 확인:"
-             curl http://localhost:8080 || echo "Application is not responding!"
+             tail -n 150 /home/ubuntu/project/test/app.log
 
             
