@@ -50,12 +50,13 @@ jobs:
              
              /home/ubuntu/deploy.sh
              
-      -    name: log check
+      -    name: restart
            run: |
-             echo "최근 애플리케이션 로그 확인:"
-             tail -n 150 /home/ubuntu/project/app.log
+             # echo "최근 애플리케이션 로그 확인:"
+             # tail -n 150 /home/ubuntu/project/app.log
+              echo "서비스 재시작"
+              sudo systemctl start devoka.service
 
       -    name: restart
            run: |
-             echo "다시시작"
-             nohup java -jar -Dspring.profiles.active=prod -Duser.timezone=Asia/Seoul /home/ubuntu/project/devoka-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+             sudo systemctl status devoka.service
