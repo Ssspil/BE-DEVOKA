@@ -49,6 +49,13 @@ jobs:
              export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
              
              /home/ubuntu/deploy.sh
-
+             
+      -    name: log check
+           run: |
              echo "최근 애플리케이션 로그 확인:"
              tail -n 150 /home/ubuntu/project/app.log
+
+      -    name: restart
+           run: |
+             echo "다시시작"
+             nohup java -jar -Dspring.profiles.active=prod -Duser.timezone=Asia/Seoul /home/ubuntu/project/devoka-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
