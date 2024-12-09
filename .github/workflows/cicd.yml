@@ -40,13 +40,13 @@ jobs:
              echo "현재 작업 디렉토리 : "
              pwd
              
-             chmod +x /home/ubuntu/deploy.sh
-             export DB_URL=${{ secrets.DB_URL }}
-             export DB_USERNAME=${{ secrets.DB_USERNAME }}
-             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-             export CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}
-             export CORS_ALLOW_METHOD=${{ secrets.CORS_ALLOW_METHOD }}
-             export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+             # chmod +x /home/ubuntu/deploy.sh
+             # export DB_URL=${{ secrets.DB_URL }}
+             # export DB_USERNAME=${{ secrets.DB_USERNAME }}
+             # export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+             # export CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}
+             # export CORS_ALLOW_METHOD=${{ secrets.CORS_ALLOW_METHOD }}
+             # export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
              
              /home/ubuntu/deploy.sh
              
