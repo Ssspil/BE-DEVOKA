@@ -50,13 +50,11 @@ jobs:
              
              /home/ubuntu/deploy.sh
              
-      -    name: restart
+      -    name: Service Restart
            run: |
-             # echo "최근 애플리케이션 로그 확인:"
-             # tail -n 150 /home/ubuntu/project/app.log
               echo "서비스 재시작"
               sudo systemctl start devoka.service
 
-      -    name: restart
+      -    name: Service Status Check
            run: |
              sudo systemctl status devoka.service
