@@ -50,3 +50,6 @@ jobs:
              export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
              
              sudo /home/ubuntu/deploy.sh
+
+      -    name: 방화벽 열어봄
+           run: | 
