@@ -51,5 +51,5 @@ jobs:
              
              /home/ubuntu/deploy.sh
 
-      -    name: 워크플로우에 sudo 제거
+      -    name: sudo 원복
            run: | 
