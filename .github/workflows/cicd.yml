@@ -51,5 +51,5 @@ jobs:
              
              /home/ubuntu/deploy.sh
 
-      -    name: 문제 파일 삭제 후 재 도전2
+      -    name: 재설치 후 시도
            run: | 
