@@ -51,5 +51,5 @@ jobs:
              
              /home/ubuntu/deploy.sh
 
-      -    name: 재설치 후 시도
+      -    name: 배포 쉘 스크립트 스프링기동 sudo 추가
            run: | 
