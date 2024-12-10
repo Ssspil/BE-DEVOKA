@@ -50,3 +50,6 @@ jobs:
              
              sudo /home/ubuntu/deploy.sh
              
+      -    name: Checkout
+           run: |
+             echo "아 제발"
