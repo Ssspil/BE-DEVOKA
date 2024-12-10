@@ -50,7 +50,7 @@ jobs:
              export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
              # export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
              
-             /home/ubuntu/deploy.sh
+             sudo /home/ubuntu/deploy.sh
 
-      -    name: 방화벽 닫기
+      -    name: 배포 쉘 스크립트에 sudo 권한 추가
            run: | 
