@@ -48,9 +48,8 @@ jobs:
              export CORS_ALLOW_ORIGIN=${{ secrets.CORS_ALLOW_ORIGIN }}
              export CORS_ALLOW_METHOD=${{ secrets.CORS_ALLOW_METHOD }}
              export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-             # export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
              
-             sudo /home/ubuntu/deploy.sh
+             /home/ubuntu/deploy.sh
 
-      -    name: 배포 쉘 스크립트내부 빌드, 기동 sudo 추가
+      -    name: 워크플로우에 sudo 제거
            run: | 
