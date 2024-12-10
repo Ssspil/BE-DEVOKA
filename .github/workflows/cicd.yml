@@ -49,7 +49,3 @@ jobs:
              export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
              
              sudo /home/ubuntu/deploy.sh
-             
-      -    name: Checkout
-           run: |
-             echo "아 제발"
