@@ -50,11 +50,3 @@ jobs:
              
              sudo /home/ubuntu/deploy.sh
              
-      # -    name: Service Restart
-      #      run: |
-      #         echo "서비스 재시작"
-      #         sudo systemctl start devoka.service
-
-      # -    name: Service Status Check
-      #      run: |
-      #        sudo systemctl status devoka.service
