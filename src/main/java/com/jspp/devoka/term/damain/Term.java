@@ -48,7 +48,7 @@ public class Term {
     // 엔티티 생성 때 Default 값
     @PrePersist
     public void onCreate(){
-        this.approvalYn = "N";
+        this.approvalYn = "Y";
         this.deleteYn = "N";
         if (auditable == null) {
             auditable = new Auditable(); // Auditable 객체 초기화

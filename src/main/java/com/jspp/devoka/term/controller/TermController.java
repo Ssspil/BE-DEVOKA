@@ -125,4 +125,21 @@ public class TermController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "용어 추천", description = "사용자에게 보여줄 용어 추천목록입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "용어 추천 목록 조회 성공",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "500", description = "서버 오류",
+                    content = @Content(schema = @Schema(hidden = true)))
+    })
+    @GetMapping("/recommend")
+    public ResponseEntity<CommonApiResponse<List<TermResponse>>> recommendTerm(){
+
+        List<TermResponse> termList = termService.recommendTerm();
+        // 공통 응답 처리
+        CommonApiResponse<List<TermResponse>> response = CommonApiResponse.success(termList, DataType.Array);
+
+        return ResponseEntity.ok().body(response);
+    }
+
 }
