@@ -30,8 +30,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 
-	// Spring Data Elasticsearch
-//	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	// Elasticsearch
+	implementation 'co.elastic.clients:elasticsearch-java:8.15.3'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+
 
 	// Postgre
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.1'

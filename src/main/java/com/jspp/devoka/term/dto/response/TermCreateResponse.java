@@ -28,15 +28,15 @@ public class TermCreateResponse {
 
         Category category = termEntity.getCategory();
 
-        TermCreateResponse.TermCreateResponseBuilder builder = TermCreateResponse.builder()
+        return TermCreateResponse.builder()
                 .termNo(termEntity.getTermNo())
                 .korName(termEntity.getKorName())
                 .engName(termEntity.getEngName())
                 .abbName(termEntity.getAbbName())
                 .definition(termEntity.getDefinition())
                 .categoryId(category.getCategoryId())
-                .categoryName(category.getCategoryName());
+                .categoryName(category.getCategoryName())
+                .build();
 
-        return builder.build();
     }
 }

@@ -84,9 +84,8 @@ public class TermService {
     public List<TermSearchResponse> searchTerm(String keyword) {
 
         // LIKE 검색 결과를 가져옴
-        // TODO 관리자가 승인 한 것만 노출 되도록 수정
         // TODO 엘라스틱 서치로 변경
-        List<Term> findList = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingOrDefinitionContainingAndDeleteYn(keyword, keyword, keyword, keyword, "N");
+        List<Term> findList = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingOrDefinitionContainingAndDeleteYnAndApprovalYn(keyword, keyword, keyword, keyword, "N", "Y");
 
         // 카테고리 별로 그룹화
         Map<Category, List<Term>> termListGroupByCategoryId = findList.stream().collect(Collectors.groupingBy(Term::getCategory));
@@ -144,5 +143,19 @@ public class TermService {
         Term findTerm = termRepository.findById(termNo).orElseThrow(() -> new TermNotFoundException(ErrorCode.NOT_FOUND_TERM));
         // 삭제
         findTerm.delete();
+    }
+
+
+    /**
+     * 랜덤 추천 용어 20개
+     * // TODO 랜덤 20개, 최신20개, 관리자 설정 등 할 수 있게 수정
+     * @return
+     */
+    public List<TermResponse> recommendTerm(){
+        String approval = "Y";
+        String deleteYn = "N";
+        List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYn(approval, deleteYn);
+
+        return list.stream().map(TermResponse::fromEntity).toList();
     }
 }
