@@ -148,6 +148,7 @@ public class TermService {
 
     /**
      * 랜덤 추천 용어 20개
+     * // TODO 랜덤 20개, 최신20개, 관리자 설정 등 할 수 있게 수정
      * @return
      */
     public List<TermResponse> recommendTerm(){

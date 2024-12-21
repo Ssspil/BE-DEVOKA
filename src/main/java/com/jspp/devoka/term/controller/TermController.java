@@ -64,6 +64,7 @@ public class TermController {
     @PostMapping
     public ResponseEntity<CommonApiResponse<TermCreateResponse>> createTerm(@RequestBody @Validated TermCreateRequest termRequest){
         TermCreateResponse term = termService.createTerm(termRequest);
+        // 공통 응답 처리
         CommonApiResponse<TermCreateResponse> response = CommonApiResponse.success(term, DataType.Object);
         URI uri = URI.create(ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/api/terms/" + term.getTermNo()).toUriString());
@@ -124,6 +125,7 @@ public class TermController {
 
         return ResponseEntity.noContent().build();
     }
+
 
     @Operation(summary = "용어 추천", description = "사용자에게 보여줄 용어 추천목록입니다.")
     @ApiResponses(value = {
