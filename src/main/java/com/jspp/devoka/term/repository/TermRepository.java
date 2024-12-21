@@ -23,11 +23,11 @@ public interface TermRepository extends JpaRepository<Term, Long> {
     // LIMIT과 random을 사용하기 위해 네이티브 쿼리 사용
     @Query(value = """
         SELECT * 
-        FROM term_info 
+        FROM devoka.term_info 
         WHERE approval_yn = :approvalYn
           AND delete_yn = :deleteYn
         ORDER BY RANDOM()
-        LIMIT 2
+        LIMIT 20
     """, nativeQuery = true)
     List<Term> findRandomByApprovalYnAndDeleteYn(@Param("approvalYn") String approvalYn, @Param("deleteYn") String deleteYn);
 }
