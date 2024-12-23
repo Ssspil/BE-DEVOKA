@@ -1,6 +1,7 @@
 package com.jspp.devoka.elasticsearch.dto;
 
 import com.jspp.devoka.elasticsearch.dto.request.DocumentCreateRequest;
+import com.jspp.devoka.elasticsearch.dto.request.DocumentUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class SearchTermDocument {
     private String categoryId;
     private String categoryName;
 
+    // 엘라스틱 서치 데이터 생성한 응답 값
     public static SearchTermDocument of(DocumentCreateRequest documentCreateRequest){
         SearchTermDocumentBuilder builder = SearchTermDocument.builder()
                 .id(documentCreateRequest.getId())
@@ -31,4 +33,19 @@ public class SearchTermDocument {
 
         return builder.build();
     }
+
+    // 엘라스틱 서치 데이터 수정한 응답 값
+    public static SearchTermDocument of(String termNo, DocumentUpdateRequest documentUpdateRequest){
+        SearchTermDocumentBuilder builder = SearchTermDocument.builder()
+                .id(termNo)
+                .korName(documentUpdateRequest.getKorName())
+                .engName(documentUpdateRequest.getEngName())
+                .abbName(documentUpdateRequest.getAbbName())
+                .definition(documentUpdateRequest.getDefinition())
+                .categoryId(documentUpdateRequest.getCategoryId())
+                .categoryName(documentUpdateRequest.getCategoryName());
+
+        return builder.build();
+    }
+
 }
