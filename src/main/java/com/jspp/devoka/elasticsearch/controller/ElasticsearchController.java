@@ -13,10 +13,7 @@ import com.jspp.devoka.elasticsearch.dto.SearchTermDocument;
 import com.jspp.devoka.elasticsearch.dto.request.DocumentCreateRequest;
 import com.jspp.devoka.elasticsearch.dto.request.DocumentUpdateRequest;
 import com.jspp.devoka.elasticsearch.dto.request.IndexCreateRequest;
-import com.jspp.devoka.elasticsearch.dto.response.DocumentCreateResponse;
-import com.jspp.devoka.elasticsearch.dto.response.DocumentSearchResponse;
-import com.jspp.devoka.elasticsearch.dto.response.DocumentUpdateResponse;
-import com.jspp.devoka.elasticsearch.dto.response.IndexCreateResponse;
+import com.jspp.devoka.elasticsearch.dto.response.*;
 import com.jspp.devoka.elasticsearch.service.ElasticsearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -194,5 +191,26 @@ public class ElasticsearchController {
         elasticsearchService.deleteDocument(indexName, termNo);
 
         return ResponseEntity.noContent().build();
+    }
+
+
+    @Operation(summary = "엘라스틱 서치 인기 검색 조회 (=ROW)", description = "ES 자주 검색한 데이터를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "데이터 조회 성공",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "500", description = "서버 오류",
+                    content = @Content(schema = @Schema(hidden = true)))
+    })
+    @GetMapping("/{indexName}/document/popular")
+    public ResponseEntity<CommonApiResponse<List<DocumentPopularResponse>>> getPopularDocument(@PathVariable String indexName) throws IOException {
+
+        List<DocumentPopularResponse> list = elasticsearchService.getPopularTerms();
+
+        // 공통 응답 처리
+        CommonApiResponse<List<DocumentPopularResponse>> response = CommonApiResponse.success(list, DataType.Array);
+
+        return ResponseEntity.ok().body(response);
     }
 }
