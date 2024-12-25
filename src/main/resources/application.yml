@@ -35,6 +35,8 @@ spring:
     cors:
       allowed-origins: ${CORS_ALLOW_ORIGIN}
       allowed-methods: ${CORS_ALLOW_METHOD}
+  elasticsearch:
+    uris: ${ELASTIC_URL}
 
 # 로깅
 logging:
