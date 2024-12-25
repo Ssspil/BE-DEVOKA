@@ -103,7 +103,7 @@ public class TermService {
                 .toList();
 
 
-        // 검색 이력
+        // 검색 이력 (비동기)
         searchHistoryService.save(SearchHistory.create(keyword, responseData));
 
         return responseData;
