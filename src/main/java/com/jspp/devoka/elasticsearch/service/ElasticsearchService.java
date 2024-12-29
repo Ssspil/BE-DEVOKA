@@ -6,8 +6,12 @@ import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
+import com.jspp.devoka.common.exception.ErrorCode;
 import com.jspp.devoka.elasticsearch.dto.SearchTermDocument;
 import com.jspp.devoka.elasticsearch.dto.response.DocumentPopularResponse;
+import com.jspp.devoka.elasticsearch.exception.DocumentNotFoundException;
+import com.jspp.devoka.elasticsearch.exception.IndexAlreadyExistException;
+import com.jspp.devoka.elasticsearch.exception.IndexNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,12 +36,15 @@ public class ElasticsearchService {
      * @throws IOException
      */
     public CreateIndexResponse createIndex(String indexName) throws IOException {
+        // 인덱스 존재 유무 체크
+        if(isIndexExist(indexName)) {
+            throw new IndexAlreadyExistException(ErrorCode.ALREADY_EXIST_INDEX);
+        }
+
         CreateIndexResponse response = elasticsearchClient.indices().create(c -> c
                 .index(indexName)
         );
-
         return response;
-        // CreateIndexResponse: {"index":"인덱스명","shards_acknowledged":true,"acknowledged":true}
     }
 
     /**
@@ -46,6 +53,11 @@ public class ElasticsearchService {
      * @throws IOException
      */
     public DeleteIndexResponse deleteIndex(String indexName) throws IOException {
+        // 인덱스 존재 유무 체크
+        if(!isIndexExist(indexName)) {
+            throw new IndexNotFoundException(ErrorCode.NOT_FOUND_INDEX);
+        }
+
         DeleteIndexResponse response = elasticsearchClient.indices().delete(d -> d
                 .index(indexName)
         );
@@ -152,11 +164,16 @@ public class ElasticsearchService {
      * @param searchTermDocument 변경할 데이터
      */
     public UpdateResponse<SearchTermDocument> updateDocument(String indexName, String id, SearchTermDocument searchTermDocument) throws IOException {
+        GetResponse<SearchTermDocument> documents = this.getDocuments(indexName, id);
+        if(!documents.found()){
+            throw new DocumentNotFoundException(ErrorCode.NOT_FOUND_DOCUMENT);
+        }
+
         UpdateResponse<SearchTermDocument> response = elasticsearchClient.update(u -> u
                         .index(indexName)
                         .id(id)
                         .doc(searchTermDocument),
-                        //.upsert(searchTermDocument),      // 해당 document가 없을 경우에 생셩하려고 할 때만 적용
+                //.upsert(searchTermDocument),      // 해당 document가 없을 경우에 생셩하려고 할 때만 적용
                 SearchTermDocument.class
         );
 
@@ -171,6 +188,10 @@ public class ElasticsearchService {
      * @throws IOException
      */
     public void deleteDocument(String indexName, String id) throws IOException {
+        GetResponse<SearchTermDocument> documents = this.getDocuments(indexName, id);
+        if(!documents.found()){
+            throw new DocumentNotFoundException(ErrorCode.NOT_FOUND_DOCUMENT);
+        }
         DeleteResponse delete = elasticsearchClient.delete(d -> d.index(indexName).id(id));
         // DeleteResponse: {"_id": "1","_index": "testterms","_primary_term": 1,"result": "deleted","_seq_no": 9,"_shards": {"total": 2,"successful": 1,"failed": 0},"_version": 9}
     }
@@ -237,4 +258,16 @@ public class ElasticsearchService {
         // SearchResponse: {"took":1,"timed_out":false,"_shards":{"failed":0.0,"successful":1.0,"total":1.0,"skipped":0.0},"hits":{"total":{"relation":"eq","value":12},"hits":[],"max_score":null},"aggregations":{"sterms#popular_keywords":{"buckets":[{"doc_count":10,"key":"스크립트"},{"doc_count":1,"key":"서버"},{"doc_count":1,"key":"웹"}],"doc_count_error_upper_bound":0,"sum_other_doc_count":0}}}
     }
 
+
+    /**
+     * 엘라스틱 서치 인덱스 존재 여부
+     * @param indexName
+     * @return
+     * @throws IOException
+     */
+    private boolean isIndexExist(String indexName) throws IOException {
+        return elasticsearchClient.indices()
+                .exists(i -> i.index(indexName))
+                .value();
+    }
 }

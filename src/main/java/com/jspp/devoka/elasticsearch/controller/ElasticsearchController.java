@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -46,7 +47,7 @@ public class ElasticsearchController {
                     content = @Content(schema = @Schema(hidden = true)))
     })
     @PostMapping("/index")
-    public ResponseEntity<CommonApiResponse<IndexCreateResponse>> createIndex(@RequestBody IndexCreateRequest indexCreateRequest) throws IOException {
+    public ResponseEntity<CommonApiResponse<IndexCreateResponse>> createIndex(@Validated @RequestBody IndexCreateRequest indexCreateRequest) throws IOException {
 
         CreateIndexResponse esResponse = elasticsearchService.createIndex(indexCreateRequest.getIndexName());
         IndexCreateResponse indexResponse = IndexCreateResponse.of(esResponse);

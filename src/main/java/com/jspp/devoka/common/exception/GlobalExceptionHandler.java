@@ -2,6 +2,9 @@ package com.jspp.devoka.common.exception;
 
 import com.jspp.devoka.category.exception.CategoryNotFoundException;
 import com.jspp.devoka.common.response.CommonApiResponse;
+import com.jspp.devoka.elasticsearch.exception.DocumentNotFoundException;
+import com.jspp.devoka.elasticsearch.exception.IndexAlreadyExistException;
+import com.jspp.devoka.elasticsearch.exception.IndexNotFoundException;
 import com.jspp.devoka.term.exception.TermNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +32,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TermNotFoundException.class)
     public ResponseEntity<CommonApiResponse<Void>> termNotFoundException(TermNotFoundException e) {
         log.error("용어 조회 예외 발생 : [{}]  {}", e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
+        CommonApiResponse<Void> response = CommonApiResponse.failure(e.getErrorCode());
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
+    }
+
+    /********************************
+     *  엘라스틱 서치 예외
+     ********************************/
+    @ExceptionHandler(IndexAlreadyExistException.class)
+    public ResponseEntity<CommonApiResponse<Void>> alreadyIndexException(IndexAlreadyExistException e){
+        log.error("엘라스틱 인덱스 생성 예외 발생 : [{}]  {}", e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
+        CommonApiResponse<Void> response = CommonApiResponse.failure(e.getErrorCode());
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
+    }
+
+    @ExceptionHandler(IndexNotFoundException.class)
+    public ResponseEntity<CommonApiResponse<Void>> notFoundIndexException(IndexNotFoundException e){
+        log.error("엘라스틱 인덱스 조회 예외 발생 : [{}]  {}", e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
+        CommonApiResponse<Void> response = CommonApiResponse.failure(e.getErrorCode());
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
+    }
+
+    @ExceptionHandler(DocumentNotFoundException.class)
+    public ResponseEntity<CommonApiResponse<Void>> notFoundDocumentException(DocumentNotFoundException e){
+        log.error("엘라스틱 데이터 조회 예외 발생 : [{}]  {}", e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
         CommonApiResponse<Void> response = CommonApiResponse.failure(e.getErrorCode());
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
     }
