@@ -20,6 +20,7 @@ public interface TermRepository extends JpaRepository<Term, Long> {
     Page<Term> findByCategory_CategoryIdAndDeleteYn(String categoryId, String deleteYn, Pageable pageable);
 
     // 추천 용어 목록 조회
+    // TODO *로 조회 말고 칼럼 값으로 조회로 변경
     // LIMIT과 random을 사용하기 위해 네이티브 쿼리 사용
     @Query(value = """
         SELECT *
@@ -32,6 +33,7 @@ public interface TermRepository extends JpaRepository<Term, Long> {
     List<Term> findRandomByApprovalYnAndDeleteYn(@Param("approvalYn") String approvalYn, @Param("deleteYn") String deleteYn);
 
     // 용어 검색 조회
+    // TODO *로 조회 말고 칼럼 값으로 조회로 변경
     @Query(value = """
         SELECT * 
         FROM devoka.term_info t
