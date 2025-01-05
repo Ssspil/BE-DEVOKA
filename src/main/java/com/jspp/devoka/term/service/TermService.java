@@ -83,9 +83,8 @@ public class TermService {
     @Transactional
     public List<TermSearchResponse> searchTerm(String keyword) {
 
-        // LIKE 검색 결과를 가져옴
-        // TODO 엘라스틱 서치로 변경
-        List<Term> findList = termRepository.findByKorNameContainingOrEngNameContainingOrAbbNameContainingOrDefinitionContainingAndDeleteYnAndApprovalYn(keyword, keyword, keyword, keyword, "N", "Y");
+        // 네이티브 쿼리 이용해서 검색 조회
+        List<Term> findList = termRepository.findSearchTerm(keyword, "Y", "N");
 
         // 카테고리 별로 그룹화
         Map<Category, List<Term>> termListGroupByCategoryId = findList.stream().collect(Collectors.groupingBy(Term::getCategory));

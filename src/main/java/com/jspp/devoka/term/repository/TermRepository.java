@@ -22,12 +22,23 @@ public interface TermRepository extends JpaRepository<Term, Long> {
     // 추천 용어 목록 조회
     // LIMIT과 random을 사용하기 위해 네이티브 쿼리 사용
     @Query(value = """
-        SELECT * 
-        FROM devoka.term_info 
+        SELECT *
+        FROM devoka.term_info t
         WHERE approval_yn = :approvalYn
           AND delete_yn = :deleteYn
         ORDER BY RANDOM()
         LIMIT 20
     """, nativeQuery = true)
     List<Term> findRandomByApprovalYnAndDeleteYn(@Param("approvalYn") String approvalYn, @Param("deleteYn") String deleteYn);
+
+    // 용어 검색 조회
+    @Query(value = """
+        SELECT * 
+        FROM devoka.term_info t
+        WHERE t.document_search @@ to_tsquery(:keyword)
+            AND t.approval_yn = :approvalYn
+            AND t.delete_yn = :deleteYn
+    """, nativeQuery = true)
+    List<Term> findSearchTerm(@Param("keyword") String keyword, @Param("approvalYn") String approvalYn, @Param("deleteYn") String deleteYn);
+
 }
