@@ -102,8 +102,10 @@ public class TermService {
                 .toList();
 
 
-        // 검색 이력 (비동기)
-        searchHistoryService.save(SearchHistory.create(keyword, responseData));
+        // 검색한 데이터 있을 떄, 검색 이력 추가(비동기)
+        if(!findList.isEmpty()) {
+            searchHistoryService.save(SearchHistory.create(keyword, responseData));
+        }
 
         return responseData;
     }
