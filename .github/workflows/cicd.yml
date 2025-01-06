@@ -40,7 +40,8 @@ jobs:
              echo "현재 작업 디렉토리 : "
              pwd
              
-             # chmod +x /home/ubuntu/deploy.sh
+             chmod +x /home/ubuntu/deploy.sh
+
              # export DB_URL=${{ secrets.DB_URL }}
              # export DB_USERNAME=${{ secrets.DB_USERNAME }}
              # export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
