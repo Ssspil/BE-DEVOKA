@@ -42,6 +42,9 @@ public class Term {
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
 
+    @Column(name = "document_search", columnDefinition = "tsvector", insertable = false, updatable = false)
+    private String documentSearch;
+
     @Embedded
     private Auditable auditable;
 
@@ -54,7 +57,6 @@ public class Term {
             auditable = new Auditable(); // Auditable 객체 초기화
         }
     }
-
 
     // 엔티티 수정
     public void updateTerm(TermUpdateRequest updateTermRequest, Category category){
