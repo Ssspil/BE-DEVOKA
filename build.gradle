@@ -33,6 +33,8 @@ dependencies {
 	// Elasticsearch
 	implementation 'co.elastic.clients:elasticsearch-java:8.15.3'
 
+	// JPA
+	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.9.0'
 
 	// Opensearch
 	implementation 'org.opensearch.client:opensearch-rest-client:2.17.1'
