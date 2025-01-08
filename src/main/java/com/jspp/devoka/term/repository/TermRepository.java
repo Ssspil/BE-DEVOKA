@@ -17,7 +17,7 @@ public interface TermRepository extends JpaRepository<Term, Long> {
     List<Term> findByKorNameContainingOrEngNameContainingOrAbbNameContainingOrDefinitionContainingAndDeleteYnAndApprovalYn(String korName, String engName, String abbName, String definition, String deleteYn, String approvalYn);
 
     // 카테고리 별 용어 목록 조회
-    Page<Term> findByCategory_CategoryIdAndDeleteYn(String categoryId, String deleteYn, Pageable pageable);
+    Page<Term> findByCategory_CategoryIdAndDeleteYnAndApprovalYn(String categoryId, String deleteYn, String approvalYn, Pageable pageable);
 
     // 추천 용어 목록 조회
     // TODO *로 조회 말고 칼럼 값으로 조회로 변경

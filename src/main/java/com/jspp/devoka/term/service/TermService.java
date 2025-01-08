@@ -30,10 +30,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TermService {
 
+    // 용어 Repository
     private final TermRepository termRepository;
-
+    // 카테고리 서비스
     private final CategoryService categoryService;
-
+    // 검색 이력 서비스
     private final SearchHistoryService searchHistoryService;
 
 
@@ -45,11 +46,14 @@ public class TermService {
      * @return
      */
     public TermListResponse getTermListByCategory(int page, int size, String categoryId) {
+        String approvalYn = "Y";
         String deleteYn = "N";
+
         Pageable pageable = PageRequest.of(page, size);
 
+        // 카테고리 정보
         Category category = categoryService.findByCategoryId(categoryId);
-        Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYn(categoryId, deleteYn, pageable);
+        Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYnAndApprovalYn(categoryId, deleteYn, approvalYn, pageable);
 
         List<Term> content = findTermPage.getContent();
         List<TermResponse> list = content.stream().map(TermResponse::fromEntity).toList();
@@ -72,6 +76,7 @@ public class TermService {
         // 용어 저장
         Term saveTerm = termRepository.save(termRequest.toEntity(findCategory));
 
+        // 생성된 Term TermCreateResponse로 변환하여 반환
         return TermCreateResponse.fromEntity(saveTerm);
     }
 
@@ -135,8 +140,10 @@ public class TermService {
         // 카테고리 ID로 카테고리 조회
         Category updateCategory = categoryService.findByCategoryId(termRequest.getCategoryId());
 
+        // 값 수정하여 업데이트
         findTerm.updateTerm(termRequest, updateCategory);
 
+        // 수정된 Term TermUpdateResponse 변환하여 반환
         return TermUpdateResponse.fromEntity(findTerm);
     }
 
@@ -161,7 +168,7 @@ public class TermService {
      * // TODO 랜덤 20개, 최신20개, 관리자 설정 등 할 수 있게 수정
      * @return
      */
-    public List<TermResponse> recommendTerm(){
+    public List<TermResponse> recommendTermList(){
         String approvalYn = "Y";
         String deleteYn = "N";
         List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYn(approvalYn, deleteYn);

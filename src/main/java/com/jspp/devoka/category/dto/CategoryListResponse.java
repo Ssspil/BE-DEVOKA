@@ -36,6 +36,7 @@ public class CategoryListResponse {
                 .sortOrder(categoryEntity.getSortOrder())
                 .depth(categoryEntity.getDepth());
 
+        // 하위 카테고리
         if(categoryEntity.getSubCategories() != null) {
             List<CategoryListResponse> childList = categoryEntity.getSubCategories().stream()
                     .map(CategoryListResponse::fromEntity)
