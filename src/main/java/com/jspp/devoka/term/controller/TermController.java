@@ -2,9 +2,12 @@ package com.jspp.devoka.term.controller;
 
 import com.jspp.devoka.common.response.CommonApiResponse;
 import com.jspp.devoka.common.response.DataType;
+import com.jspp.devoka.history.dto.RankData;
+import com.jspp.devoka.history.service.SearchHistoryService;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
 import com.jspp.devoka.term.dto.response.*;
 import com.jspp.devoka.term.dto.request.TermUpdateRequest;
+import com.jspp.devoka.term.service.PopularSearchService;
 import com.jspp.devoka.term.service.TermService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +33,8 @@ import java.util.List;
 public class TermController {
 
     private final TermService termService;
+    private final SearchHistoryService searchHistoryService;
+    private final PopularSearchService popularSearchService;
 
     @Operation(summary = "카테고리 별 용어 목록 조회", description = "카테고리 별 용어들을 조회합니다.")
     @ApiResponses(value = {
@@ -80,7 +85,7 @@ public class TermController {
                     content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping("/search")
-    public ResponseEntity<CommonApiResponse<List<TermSearchResponse>>> searchTerm(@Parameter(description = "검색할 용어") @RequestParam(name = "keyword", required = false) String keyword){
+    public ResponseEntity<CommonApiResponse<List<TermSearchResponse>>> getSearchTerm(@Parameter(description = "검색할 용어") @RequestParam(name = "keyword", required = false) String keyword){
 
         List<TermSearchResponse> termList = termService.searchTerm(keyword);
         CommonApiResponse<List<TermSearchResponse>> response = CommonApiResponse.success(termList, DataType.Array);
@@ -135,11 +140,29 @@ public class TermController {
                     content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping("/recommend")
-    public ResponseEntity<CommonApiResponse<List<TermResponse>>> recommendTerm(){
+    public ResponseEntity<CommonApiResponse<List<TermResponse>>> getRecommendTerm(){
 
         List<TermResponse> termList = termService.recommendTerm();
         // 공통 응답 처리
         CommonApiResponse<List<TermResponse>> response = CommonApiResponse.success(termList, DataType.Array);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "용어 인기 검색어 조회", description = "사용자가 검색한 인기 용어 목록을 조회합니다..")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "인기 검색어 조회 성공",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "500", description = "서버 오류",
+                    content = @Content(schema = @Schema(hidden = true)))
+    })
+    @GetMapping("/popular")
+    public ResponseEntity<CommonApiResponse<List<RankData>>> getPopularTerm(){
+
+        List<RankData> rankData = popularSearchService.getRankData();
+
+        // 공통 응답 처리
+        CommonApiResponse<List<RankData>> response = CommonApiResponse.success(rankData, DataType.Array);
 
         return ResponseEntity.ok().body(response);
     }

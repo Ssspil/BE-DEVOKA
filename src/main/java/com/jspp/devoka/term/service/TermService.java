@@ -10,6 +10,7 @@ import com.jspp.devoka.term.damain.Term;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
 import com.jspp.devoka.term.dto.response.*;
 import com.jspp.devoka.term.dto.request.TermUpdateRequest;
+import com.jspp.devoka.term.exception.InvalidSearchKeyword;
 import com.jspp.devoka.term.exception.TermNotFoundException;
 import com.jspp.devoka.term.repository.TermRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,11 +45,11 @@ public class TermService {
      * @return
      */
     public TermListResponse getTermListByCategory(int page, int size, String categoryId) {
-
+        String deleteYn = "N";
         Pageable pageable = PageRequest.of(page, size);
 
         Category category = categoryService.findByCategoryId(categoryId);
-        Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYn(categoryId, "N", pageable);
+        Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYn(categoryId, deleteYn, pageable);
 
         List<Term> content = findTermPage.getContent();
         List<TermResponse> list = content.stream().map(TermResponse::fromEntity).toList();
@@ -82,9 +83,16 @@ public class TermService {
      */
     @Transactional
     public List<TermSearchResponse> searchTerm(String keyword) {
+        String approvalYn = "Y";
+        String deleteYn = "N";
+
+        if(!validationKeyword(keyword)){
+            throw new InvalidSearchKeyword(ErrorCode.BAD_REQUEST_SEARCH_TERM);
+        }
 
         // 네이티브 쿼리 이용해서 검색 조회
-        List<Term> findList = termRepository.findSearchTerm(keyword, "Y", "N");
+        String searchKeyword = keyword.trim().replaceAll("\\s+", " & ");
+        List<Term> findList = termRepository.findSearchTerm(searchKeyword, approvalYn, deleteYn);
 
         // 카테고리 별로 그룹화
         Map<Category, List<Term>> termListGroupByCategoryId = findList.stream().collect(Collectors.groupingBy(Term::getCategory));
@@ -104,7 +112,8 @@ public class TermService {
 
         // 검색한 데이터 있을 떄, 검색 이력 추가(비동기)
         if(!findList.isEmpty()) {
-            searchHistoryService.save(SearchHistory.create(keyword, responseData));
+            String insertKeyword = keyword.trim().replaceAll("\\s+", " ");
+            searchHistoryService.save(SearchHistory.create(insertKeyword, responseData));
         }
 
         return responseData;
@@ -153,10 +162,19 @@ public class TermService {
      * @return
      */
     public List<TermResponse> recommendTerm(){
-        String approval = "Y";
+        String approvalYn = "Y";
         String deleteYn = "N";
-        List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYn(approval, deleteYn);
+        List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYn(approvalYn, deleteYn);
 
         return list.stream().map(TermResponse::fromEntity).toList();
+    }
+
+    private boolean validationKeyword(String keyword){
+        String regexp = "^[a-zA-Z0-9가-힣]*$";
+
+        if (keyword == null || keyword.isEmpty()) {
+            return false; // 키워드가 null이거나 빈 값이면 false 반환
+        }
+        return keyword.matches(regexp); // 정규식과 일치하면 true 반환
     }
 }
