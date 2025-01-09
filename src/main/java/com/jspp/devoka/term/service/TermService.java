@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -171,10 +172,16 @@ public class TermService {
     public List<TermResponse> recommendTermList(){
         String approvalYn = "Y";
         String deleteYn = "N";
-        List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYn(approvalYn, deleteYn);
+        // 1부터 1,000,000,000까지 랜덤 생성
+        int randomValue = ThreadLocalRandom.current().nextInt(1, 1_000_000_001);
 
+        // 랜덤 숫자 보다 같거나 큰 Random ID 값들을 랜덤으로 조회
+        List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYnAndRandomValueGreaterThan(approvalYn, deleteYn, randomValue);
+
+        // Term 리스트를 TermResponse로 변환하여 반환
         return list.stream().map(TermResponse::fromEntity).toList();
     }
+
 
     private boolean validationKeyword(String keyword){
         String regexp = "^[a-zA-Z0-9가-힣]*$";
