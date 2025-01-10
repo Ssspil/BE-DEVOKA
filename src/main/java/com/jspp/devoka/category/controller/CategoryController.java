@@ -36,7 +36,8 @@ public class CategoryController {
                     content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping("/all")
-    public ResponseEntity<CommonApiResponse<List<CategoryListResponse>>> getCategories(@RequestParam(name = "size", defaultValue = "10") int size,
+    public ResponseEntity<CommonApiResponse<List<CategoryListResponse>>> getCategories(
+                                                                @RequestParam(name = "size", defaultValue = "10") int size,
                                                                 @RequestParam(name = "page", defaultValue = "0") int page) {
         // 데이터
         List<CategoryListResponse> categoryList = categoryService.getCategoryList(page, size);

@@ -15,6 +15,11 @@ public class TermCreateRequest {
     private String definition;
     private String categoryId;
 
+    /**
+     * 엔티티로 변환
+     * @param category
+     * @return
+     */
     public Term toEntity(Category category) {
         return Term.builder()
                 .korName(korName)

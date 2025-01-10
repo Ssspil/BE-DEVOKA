@@ -17,20 +17,19 @@ public interface TermRepository extends JpaRepository<Term, Long> {
     List<Term> findByKorNameContainingOrEngNameContainingOrAbbNameContainingOrDefinitionContainingAndDeleteYnAndApprovalYn(String korName, String engName, String abbName, String definition, String deleteYn, String approvalYn);
 
     // 카테고리 별 용어 목록 조회
-    Page<Term> findByCategory_CategoryIdAndDeleteYn(String categoryId, String deleteYn, Pageable pageable);
+    Page<Term> findByCategory_CategoryIdAndDeleteYnAndApprovalYn(String categoryId, String deleteYn, String approvalYn, Pageable pageable);
 
     // 추천 용어 목록 조회
-    // TODO *로 조회 말고 칼럼 값으로 조회로 변경
-    // LIMIT과 random을 사용하기 위해 네이티브 쿼리 사용
     @Query(value = """
-        SELECT *
-        FROM devoka.term_info t
-        WHERE approval_yn = :approvalYn
-          AND delete_yn = :deleteYn
+        SELECT t
+        FROM Term t
+        WHERE t.approvalYn = :approvalYn
+          AND t.deleteYn = :deleteYn
+          AND t.randomId >= :randomValue
         ORDER BY RANDOM()
         LIMIT 20
-    """, nativeQuery = true)
-    List<Term> findRandomByApprovalYnAndDeleteYn(@Param("approvalYn") String approvalYn, @Param("deleteYn") String deleteYn);
+    """)
+    List<Term> findRandomByApprovalYnAndDeleteYnAndRandomValueGreaterThan(@Param("approvalYn") String approvalYn, @Param("deleteYn") String deleteYn, @Param("randomValue") int randomValue);
 
     // 용어 검색 조회
     // TODO *로 조회 말고 칼럼 값으로 조회로 변경

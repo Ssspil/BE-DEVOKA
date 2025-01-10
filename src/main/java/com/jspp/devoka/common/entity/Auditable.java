@@ -22,13 +22,13 @@ public class Auditable {
     private LocalDateTime updatedDate;
 
     @PrePersist
-    public void onCreate(){
+    private void onCreate(){
         this.createdBy = (createdBy != null) ? createdBy : "SYSTEM";
         this.createdDate = LocalDateTime.now();
     }
 
     @PreUpdate
-    public void onUpdate(){
+    private void onUpdate(){
         this.updatedBy = (updatedBy != null) ? updatedBy : "SYSTEM";
         this.updatedDate = LocalDateTime.now();
     }

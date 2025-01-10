@@ -6,6 +6,8 @@ import com.jspp.devoka.term.dto.request.TermUpdateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 
 @Entity
 @Getter
@@ -38,6 +40,9 @@ public class Term {
     @Column(name = "delete_yn")
     private String deleteYn;
 
+    @Column(name = "random_id")
+    private int randomId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
@@ -50,12 +55,14 @@ public class Term {
 
     // 엔티티 생성 때 Default 값
     @PrePersist
-    public void onCreate(){
+    private void onCreate(){
         this.approvalYn = "Y";
         this.deleteYn = "N";
         if (auditable == null) {
             auditable = new Auditable(); // Auditable 객체 초기화
         }
+        // 1부터 1,000,000,000 까지 랜덤 생성
+        this.randomId = ThreadLocalRandom.current().nextInt(1, 1_000_000_001);
     }
 
     // 엔티티 수정

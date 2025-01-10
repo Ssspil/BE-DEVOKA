@@ -45,7 +45,7 @@ public class CommonApiResponse<T> {
         return new CommonApiResponse<>(header, null);
     }
 
-    // 유효성 체크할 때 메시지만 내려줄 때
+    // 시스템 에러 메시지만 내려줄 때
     public static <T> CommonApiResponse<T> failure(String msg){
         // 응답 헤더 생성
         ResponseHeader header = new ResponseHeader.ResponseHeaderBuilder()
@@ -62,7 +62,7 @@ public class CommonApiResponse<T> {
     @Getter
     @Builder
     @RequiredArgsConstructor
-    public static class ResponseHeader {
+    protected static class ResponseHeader {
         private final String resultCode;
         private final String message;
         private final String dataType;

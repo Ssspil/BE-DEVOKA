@@ -10,6 +10,7 @@ import com.jspp.devoka.term.damain.Term;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
 import com.jspp.devoka.term.dto.response.*;
 import com.jspp.devoka.term.dto.request.TermUpdateRequest;
+import com.jspp.devoka.term.exception.InvalidSearchKeyword;
 import com.jspp.devoka.term.exception.TermNotFoundException;
 import com.jspp.devoka.term.repository.TermRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,10 +31,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TermService {
 
+    // 용어 Repository
     private final TermRepository termRepository;
-
+    // 카테고리 서비스
     private final CategoryService categoryService;
-
+    // 검색 이력 서비스
     private final SearchHistoryService searchHistoryService;
 
 
@@ -44,11 +47,14 @@ public class TermService {
      * @return
      */
     public TermListResponse getTermListByCategory(int page, int size, String categoryId) {
+        String approvalYn = "Y";
+        String deleteYn = "N";
 
         Pageable pageable = PageRequest.of(page, size);
 
+        // 카테고리 정보
         Category category = categoryService.findByCategoryId(categoryId);
-        Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYn(categoryId, "N", pageable);
+        Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYnAndApprovalYn(categoryId, deleteYn, approvalYn, pageable);
 
         List<Term> content = findTermPage.getContent();
         List<TermResponse> list = content.stream().map(TermResponse::fromEntity).toList();
@@ -71,6 +77,7 @@ public class TermService {
         // 용어 저장
         Term saveTerm = termRepository.save(termRequest.toEntity(findCategory));
 
+        // 생성된 Term TermCreateResponse로 변환하여 반환
         return TermCreateResponse.fromEntity(saveTerm);
     }
 
@@ -82,9 +89,16 @@ public class TermService {
      */
     @Transactional
     public List<TermSearchResponse> searchTerm(String keyword) {
+        String approvalYn = "Y";
+        String deleteYn = "N";
+
+        if(!validationKeyword(keyword)){
+            throw new InvalidSearchKeyword(ErrorCode.BAD_REQUEST_SEARCH_TERM);
+        }
 
         // 네이티브 쿼리 이용해서 검색 조회
-        List<Term> findList = termRepository.findSearchTerm(keyword, "Y", "N");
+        String searchKeyword = keyword.trim().replaceAll("\\s+", " & ");
+        List<Term> findList = termRepository.findSearchTerm(searchKeyword, approvalYn, deleteYn);
 
         // 카테고리 별로 그룹화
         Map<Category, List<Term>> termListGroupByCategoryId = findList.stream().collect(Collectors.groupingBy(Term::getCategory));
@@ -104,7 +118,8 @@ public class TermService {
 
         // 검색한 데이터 있을 떄, 검색 이력 추가(비동기)
         if(!findList.isEmpty()) {
-            searchHistoryService.save(SearchHistory.create(keyword, responseData));
+            String insertKeyword = keyword.trim().replaceAll("\\s+", " ");
+            searchHistoryService.save(SearchHistory.create(insertKeyword, responseData));
         }
 
         return responseData;
@@ -126,8 +141,10 @@ public class TermService {
         // 카테고리 ID로 카테고리 조회
         Category updateCategory = categoryService.findByCategoryId(termRequest.getCategoryId());
 
+        // 값 수정하여 업데이트
         findTerm.updateTerm(termRequest, updateCategory);
 
+        // 수정된 Term TermUpdateResponse 변환하여 반환
         return TermUpdateResponse.fromEntity(findTerm);
     }
 
@@ -152,11 +169,26 @@ public class TermService {
      * // TODO 랜덤 20개, 최신20개, 관리자 설정 등 할 수 있게 수정
      * @return
      */
-    public List<TermResponse> recommendTerm(){
-        String approval = "Y";
+    public List<TermResponse> recommendTermList(){
+        String approvalYn = "Y";
         String deleteYn = "N";
-        List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYn(approval, deleteYn);
+        // 1부터 1,000,000,000까지 랜덤 생성
+        int randomValue = ThreadLocalRandom.current().nextInt(1, 1_000_000_001);
 
+        // 랜덤 숫자 보다 같거나 큰 Random ID 값들을 랜덤으로 조회
+        List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYnAndRandomValueGreaterThan(approvalYn, deleteYn, randomValue);
+
+        // Term 리스트를 TermResponse로 변환하여 반환
         return list.stream().map(TermResponse::fromEntity).toList();
+    }
+
+
+    private boolean validationKeyword(String keyword){
+        String regexp = "^[a-zA-Z0-9가-힣]*$";
+
+        if (keyword == null || keyword.isEmpty()) {
+            return false; // 키워드가 null이거나 빈 값이면 false 반환
+        }
+        return keyword.matches(regexp); // 정규식과 일치하면 true 반환
     }
 }
