@@ -18,6 +18,9 @@ public class TermScheduler {
     private final SearchHistoryService searchHistoryService;
     private final PopularSearchService popularSearchService;
 
+    /**
+     * 사용자가 하루에 검색 했던 것 가지고 인기검색어 추출
+     */
     @Scheduled(cron = "0 0 2 * * *")    // 매일 오전 2시
     public void popularSearchTermScheduler() {
         // 인기 검색어 추출

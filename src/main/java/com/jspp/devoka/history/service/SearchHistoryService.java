@@ -25,7 +25,10 @@ public class SearchHistoryService {
         searchHistoryRepository.save(searchHistory);
     }
 
-    // 인기 검색어 추출
+    /**
+     * 사용자가 검색한 인기 검색어 추출
+     * @return
+     */
     public List<RankData> popularTermExtract(){
         LocalDate yesterday = LocalDate.now().minusDays(1);
         LocalDate startDay = yesterday.atStartOfDay().toLocalDate();  // 자정
@@ -33,6 +36,11 @@ public class SearchHistoryService {
 
         // TODO QueryDSL로 변경 예정
         List<Object[]> results = searchHistoryRepository.findSearchRankings(startDay, endDay);
+
+        // 검색한 데이터가 없을 경우 빈 리스트로 리턴
+        if (results.isEmpty()) return List.of();
+
+        // 로직 실행
         List<RankData> list = results.stream()
                 .map(result ->
                         new RankData(
