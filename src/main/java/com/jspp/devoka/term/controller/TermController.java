@@ -125,7 +125,6 @@ public class TermController {
     public ResponseEntity<Void> deleteTerm(@PathVariable Long termNo){
 
         termService.deleteTerm(termNo);
-
         return ResponseEntity.noContent().build();
     }
 
@@ -143,8 +142,6 @@ public class TermController {
         List<TermResponse> termList = termService.recommendTermList();
         // 공통 응답 처리
         CommonApiResponse<List<TermResponse>> response = CommonApiResponse.success(termList, DataType.Array);
-
-        //
         return ResponseEntity.ok().body(response);
     }
 
@@ -160,10 +157,8 @@ public class TermController {
     public ResponseEntity<CommonApiResponse<List<RankData>>> getPopularTerm(){
 
         List<RankData> rankData = popularSearchService.getRankData();
-
         // 공통 응답 처리
         CommonApiResponse<List<RankData>> response = CommonApiResponse.success(rankData, DataType.Array);
-
         return ResponseEntity.ok().body(response);
     }
 
