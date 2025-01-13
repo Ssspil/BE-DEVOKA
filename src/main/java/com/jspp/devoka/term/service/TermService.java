@@ -183,6 +183,11 @@ public class TermService {
     }
 
 
+    /**
+     * 검색 키워드 유효성 검사
+     * @param keyword
+     * @return
+     */
     private boolean validationKeyword(String keyword){
         String regexp = "^[a-zA-Z0-9가-힣]*$";
 
