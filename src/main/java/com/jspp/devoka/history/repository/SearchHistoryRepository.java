@@ -17,7 +17,7 @@ public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Lo
             search_text AS termName,
             COUNT(search_text) AS count
         FROM 
-            search_history
+            devoka.search_history
         WHERE 
             search_date >= :startDate
             AND search_date < :endDate
