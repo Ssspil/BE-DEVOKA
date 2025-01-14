@@ -13,16 +13,16 @@ public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Lo
 
     @Query(value = """
         SELECT 
-            ROW_NUMBER() OVER (ORDER BY COUNT(search_text) DESC) AS rank,
-            search_text AS termName,
-            COUNT(search_text) AS count
+            ROW_NUMBER() OVER (ORDER BY COUNT(sh.search_text) DESC) AS rank,
+            sh.search_text AS termName,
+            COUNT(sh.search_text) AS count
         FROM 
-            devoka.search_history
+            devoka.search_history sh
         WHERE 
-            search_date >= :startDate
-            AND search_date < :endDate
+            sh.search_date >= :startDate
+            AND sh.search_date < :endDate
         GROUP BY 
-            search_text
+            sh.search_text
         ORDER BY 
             count DESC
         limit 10
