@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -61,6 +62,39 @@ public class TermService {
 
         // Term 리스트를 TermResponse로 변환하여 반환
         return TermListResponse.of(category.getCategoryId(), category.getCategoryName(), list);
+    }
+
+    /**
+     * TODO 반복문이 아닌 그룹별 용어로 한방에 가져오도록 수정
+     * 용어 목록 전체 조회
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<TermListResponse> getTermAllList(int page, int size) {
+        String approvalYn = "Y";
+        String deleteYn = "N";
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 카테고리 리스트 조회 : 카테고리 개수 10개로 우선 고정
+        List<Category> categoryEntityList = categoryService.getCategoryEntityList(0, 10);
+
+        List<TermListResponse> list = new ArrayList<>();
+
+        for (Category category : categoryEntityList) {
+            // 카테고리별 용어 조회
+            Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYnAndApprovalYn(category.getCategoryId(), deleteYn, approvalYn, pageable);
+            // 진짜 데이터
+            List<Term> content = findTermPage.getContent();
+            // Dto로 변경
+            List<TermResponse> listDto = content.stream().map(TermResponse::fromEntity).toList();
+            // list화
+            TermListResponse wrapListDto = TermListResponse.of(category.getCategoryId(), category.getCategoryName(), listDto);
+            list.add(wrapListDto);
+        }
+
+        return list;
     }
 
 

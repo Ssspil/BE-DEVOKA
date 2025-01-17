@@ -26,6 +26,22 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+
+    /**
+     * 내부적으로 사용하는 카테고리 엔티티 리스트
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<Category> getCategoryEntityList(int page, int size){
+        // 페이징 객체 생성 + sortOrder에 따라 정렬
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("sortOrder")));
+
+        Page<Category> findCategoriesPage = categoryRepository.findAll(pageable);
+
+        return findCategoriesPage.getContent();
+    }
+
     /**
      * 카테고리 목록 조회
      * @param page
