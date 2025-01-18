@@ -126,12 +126,13 @@ public class TermService {
         String approvalYn = "Y";
         String deleteYn = "N";
 
+        // 검색 문자열 유효성 검사
         if(!validationKeyword(keyword)){
             throw new InvalidSearchKeyword(ErrorCode.BAD_REQUEST_SEARCH_TERM);
         }
 
         // 네이티브 쿼리 이용해서 검색 조회
-        String searchKeyword = keyword.trim().replaceAll("\\s+", " & ");
+        String searchKeyword = keyword.trim().replaceAll("\\s+", " & "); // 불필요한 공백 제거
         List<Term> findList = termRepository.findSearchTerm(searchKeyword, approvalYn, deleteYn);
 
         // 카테고리 별로 그룹화
@@ -152,8 +153,7 @@ public class TermService {
 
         // 검색한 데이터 있을 떄, 검색 이력 추가(비동기)
         if(!findList.isEmpty()) {
-            String insertKeyword = keyword.trim().replaceAll("\\s+", " ");
-            searchHistoryService.save(SearchHistory.create(insertKeyword, responseData));
+            searchHistoryService.saveRequest(keyword, findList, responseData);
         }
 
         return responseData;
