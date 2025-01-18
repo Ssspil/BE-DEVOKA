@@ -2,7 +2,7 @@ package com.jspp.devoka.term.controller;
 
 import com.jspp.devoka.common.response.CommonApiResponse;
 import com.jspp.devoka.common.response.DataType;
-import com.jspp.devoka.history.dto.RankData;
+import com.jspp.devoka.history.dto.response.RankResponse;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
 import com.jspp.devoka.term.dto.response.*;
 import com.jspp.devoka.term.dto.request.TermUpdateRequest;
@@ -173,11 +173,11 @@ public class TermController {
                     content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping("/popular")
-    public ResponseEntity<CommonApiResponse<List<RankData>>> getPopularTerm(){
+    public ResponseEntity<CommonApiResponse<RankResponse>> getPopularTerm(){
 
-        List<RankData> rankData = popularSearchService.getRankData();
+        RankResponse rankResponse = popularSearchService.getRankData();
         // 공통 응답 처리
-        CommonApiResponse<List<RankData>> response = CommonApiResponse.success(rankData, DataType.Array);
+        CommonApiResponse<RankResponse> response = CommonApiResponse.success(rankResponse, DataType.Array);
         return ResponseEntity.ok().body(response);
     }
 

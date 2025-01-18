@@ -1,11 +1,13 @@
 package com.jspp.devoka.term.service;
 
 import com.jspp.devoka.history.dto.RankData;
+import com.jspp.devoka.history.dto.response.RankResponse;
 import com.jspp.devoka.term.damain.PopularSearch;
 import com.jspp.devoka.term.repository.PopularSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,14 +33,17 @@ public class PopularSearchService {
      * 검색검색어 DP 테이블로 저장된것 데이터 가져오기
      * @return
      */
-    public List<RankData> getRankData(){
+    public RankResponse getRankData(){
 
         Optional<PopularSearch> popularSearchOptional = popularSearchRepository.findTopByOrderByCreateDateDesc();
 
         List<RankData> rankData = new ArrayList<>();
+        LocalDateTime dateTime = LocalDateTime.now();
         if(popularSearchOptional.isPresent()){
             rankData = popularSearchOptional.get().getRankDataList();
+            dateTime = popularSearchOptional.get().getCreateDate();
         }
-        return rankData;
+
+        return RankResponse.of(dateTime, rankData);
     }
 }
