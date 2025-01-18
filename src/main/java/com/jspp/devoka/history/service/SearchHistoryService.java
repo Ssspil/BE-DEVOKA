@@ -3,11 +3,12 @@ package com.jspp.devoka.history.service;
 import com.jspp.devoka.history.domain.SearchHistory;
 import com.jspp.devoka.history.dto.RankData;
 import com.jspp.devoka.history.repository.SearchHistoryRepository;
+import com.jspp.devoka.term.damain.Term;
+import com.jspp.devoka.term.dto.response.TermSearchResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,11 +20,38 @@ public class SearchHistoryService {
 
     private final SearchHistoryRepository searchHistoryRepository;
 
-    @Async
-    @Transactional
+    /**
+     * 검색 이력 저장
+     * @param searchHistory
+     */
     public void save(SearchHistory searchHistory){
         searchHistoryRepository.save(searchHistory);
     }
+
+
+    /**
+     * 검색이력에 저장할 수 있는지 검사하고 저장
+     * @param keyword
+     * @param findList
+     * @param responseData
+     */
+    @Async
+    public void saveRequest(String keyword, List<Term> findList, List<TermSearchResponse> responseData) {
+        String insertKeyword = keyword.trim().replaceAll("\\s+", " ").toLowerCase();  // 불필요한 공백 제거
+
+        // 한글, 영어, 약어 중에 검색한 글자가 있으면 검색이력에 저장
+        boolean isValid = findList.stream().anyMatch(term ->
+            (term.getKorName() != null && term.getKorName().toLowerCase().contains(insertKeyword)) ||
+            (term.getEngName() != null && term.getEngName().toLowerCase().contains(insertKeyword)) ||
+            (term.getAbbName() != null && term.getAbbName().toLowerCase().contains(insertKeyword))
+        );
+
+        if(isValid){
+            SearchHistory searchHistory = SearchHistory.create(keyword, responseData);
+            this.save(searchHistory);
+        }
+    }
+
 
     /**
      * 사용자가 검색한 인기 검색어 추출

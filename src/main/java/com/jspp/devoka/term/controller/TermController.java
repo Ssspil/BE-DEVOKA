@@ -2,7 +2,7 @@ package com.jspp.devoka.term.controller;
 
 import com.jspp.devoka.common.response.CommonApiResponse;
 import com.jspp.devoka.common.response.DataType;
-import com.jspp.devoka.history.dto.RankData;
+import com.jspp.devoka.history.dto.response.RankResponse;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
 import com.jspp.devoka.term.dto.response.*;
 import com.jspp.devoka.term.dto.request.TermUpdateRequest;
@@ -41,8 +41,8 @@ public class TermController {
             @ApiResponse(responseCode = "500", description = "서버 오류",
                     content = @Content(schema = @Schema(hidden = true)))
     })
-    @GetMapping("/all")
-    public ResponseEntity<CommonApiResponse<TermListResponse>> getTerms(
+    @GetMapping
+    public ResponseEntity<CommonApiResponse<TermListResponse>> getTermByCategoryId(
                     @RequestParam(name = "page", defaultValue = "0") int page,
                     @RequestParam(name = "size", defaultValue = "10") int size,
                     @Parameter(description = "해당 카테고리에 있는 목록조회") @RequestParam(name = "categoryId", defaultValue = "A0001") String categoryId){
@@ -50,6 +50,25 @@ public class TermController {
         TermListResponse termListByCategory = termService.getTermListByCategory(page, size, categoryId);
         // 공통 응답 코드 생성
         CommonApiResponse<TermListResponse> response = CommonApiResponse.success(termListByCategory, DataType.Object);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "용어 전체 조회", description = "용어들을 전체 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "500", description = "서버 오류",
+                    content = @Content(schema = @Schema(hidden = true)))
+    })
+    @GetMapping("/all")
+    public ResponseEntity<CommonApiResponse<List<TermListResponse>>> getTerms(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size){
+        // 데이터
+        List<TermListResponse> termAllList = termService.getTermAllList(page, size);
+        // 공통 응답 코드 생성
+        CommonApiResponse<List<TermListResponse>> response = CommonApiResponse.success(termAllList, DataType.Array);
 
         return ResponseEntity.ok().body(response);
     }
@@ -154,11 +173,11 @@ public class TermController {
                     content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping("/popular")
-    public ResponseEntity<CommonApiResponse<List<RankData>>> getPopularTerm(){
+    public ResponseEntity<CommonApiResponse<RankResponse>> getPopularTerm(){
 
-        List<RankData> rankData = popularSearchService.getRankData();
+        RankResponse rankResponse = popularSearchService.getRankData();
         // 공통 응답 처리
-        CommonApiResponse<List<RankData>> response = CommonApiResponse.success(rankData, DataType.Array);
+        CommonApiResponse<RankResponse> response = CommonApiResponse.success(rankResponse, DataType.Array);
         return ResponseEntity.ok().body(response);
     }
 

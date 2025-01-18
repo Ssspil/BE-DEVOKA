@@ -4,7 +4,6 @@ package com.jspp.devoka.term.service;
 import com.jspp.devoka.category.domain.Category;
 import com.jspp.devoka.category.service.CategoryService;
 import com.jspp.devoka.common.exception.ErrorCode;
-import com.jspp.devoka.history.domain.SearchHistory;
 import com.jspp.devoka.history.service.SearchHistoryService;
 import com.jspp.devoka.term.damain.Term;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
@@ -21,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,6 +33,8 @@ public class TermService {
 
     // 용어 Repository
     private final TermRepository termRepository;
+
+
     // 카테고리 서비스
     private final CategoryService categoryService;
     // 검색 이력 서비스
@@ -59,8 +61,44 @@ public class TermService {
         List<Term> content = findTermPage.getContent();
         List<TermResponse> list = content.stream().map(TermResponse::fromEntity).toList();
 
+        log.info("{} 카테고리 용어 리스트 조회", category.getCategoryName());
         // Term 리스트를 TermResponse로 변환하여 반환
         return TermListResponse.of(category.getCategoryId(), category.getCategoryName(), list);
+    }
+
+    /**
+     * TODO 반복문이 아닌 그룹별 용어로 한방에 가져오도록 수정
+     * 용어 목록 전체 조회
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<TermListResponse> getTermAllList(int page, int size) {
+        String approvalYn = "Y";
+        String deleteYn = "N";
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 카테고리 리스트 조회 : 카테고리 개수 10개로 우선 고정
+        List<Category> categoryEntityList = categoryService.getCategoryEntityList(0, 10);
+
+        List<TermListResponse> list = new ArrayList<>();
+
+        for (Category category : categoryEntityList) {
+            // 카테고리별 용어 조회
+            Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYnAndApprovalYn(category.getCategoryId(), deleteYn, approvalYn, pageable);
+            // 진짜 데이터
+            List<Term> content = findTermPage.getContent();
+            // Dto로 변경
+            List<TermResponse> listDto = content.stream().map(TermResponse::fromEntity).toList();
+            // list화
+            TermListResponse wrapListDto = TermListResponse.of(category.getCategoryId(), category.getCategoryName(), listDto);
+            list.add(wrapListDto);
+        }
+
+        log.info("모든 카테고리 용어 리스트 조회");
+        // Term 리스트를 List<TermResponse>로 변환하여 반환
+        return list;
     }
 
 
@@ -92,12 +130,14 @@ public class TermService {
         String approvalYn = "Y";
         String deleteYn = "N";
 
+        // 검색 문자열 유효성 검사
         if(!validationKeyword(keyword)){
+            log.warn("사용자가 이상한 문자를 검색하였습니다. : {}", keyword);
             throw new InvalidSearchKeyword(ErrorCode.BAD_REQUEST_SEARCH_TERM);
         }
 
         // 네이티브 쿼리 이용해서 검색 조회
-        String searchKeyword = keyword.trim().replaceAll("\\s+", " & ");
+        String searchKeyword = keyword.trim().replaceAll("\\s+", " & "); // 불필요한 공백 제거
         List<Term> findList = termRepository.findSearchTerm(searchKeyword, approvalYn, deleteYn);
 
         // 카테고리 별로 그룹화
@@ -118,10 +158,11 @@ public class TermService {
 
         // 검색한 데이터 있을 떄, 검색 이력 추가(비동기)
         if(!findList.isEmpty()) {
-            String insertKeyword = keyword.trim().replaceAll("\\s+", " ");
-            searchHistoryService.save(SearchHistory.create(insertKeyword, responseData));
+            searchHistoryService.saveRequest(keyword, findList, responseData);
         }
 
+        log.info("사용자가 검색한 용어 : {}", keyword);
+        // 검색된 용어 TermSearchResponse로 변환하여 반환
         return responseData;
     }
 
@@ -178,6 +219,7 @@ public class TermService {
         // 랜덤 숫자 보다 같거나 큰 Random ID 값들을 랜덤으로 조회
         List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYnAndRandomValueGreaterThan(approvalYn, deleteYn, randomValue);
 
+        log.info("추천 용어 조회 개수 : {}", list.size());
         // Term 리스트를 TermResponse로 변환하여 반환
         return list.stream().map(TermResponse::fromEntity).toList();
     }
