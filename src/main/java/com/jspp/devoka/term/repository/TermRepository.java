@@ -34,11 +34,13 @@ public interface TermRepository extends JpaRepository<Term, Long> {
     // 용어 검색 조회
     // TODO *로 조회 말고 칼럼 값으로 조회로 변경
     @Query(value = """
-        SELECT * 
+        SELECT ts_rank(t.document_search, to_tsquery(:keyword)) as rank,
+                t.* 
         FROM devoka.term_info t
         WHERE t.document_search @@ to_tsquery(:keyword)
             AND t.approval_yn = :approvalYn
             AND t.delete_yn = :deleteYn
+        ORDER BY rank desc, t.term_korean_name, t.term_english_name , t.term_abbreviation_name
     """, nativeQuery = true)
     List<Term> findSearchTerm(@Param("keyword") String keyword, @Param("approvalYn") String approvalYn, @Param("deleteYn") String deleteYn);
 
