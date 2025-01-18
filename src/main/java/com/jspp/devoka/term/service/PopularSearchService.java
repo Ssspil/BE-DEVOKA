@@ -5,6 +5,7 @@ import com.jspp.devoka.history.dto.response.RankResponse;
 import com.jspp.devoka.term.damain.PopularSearch;
 import com.jspp.devoka.term.repository.PopularSearchRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PopularSearchService {
@@ -31,6 +33,7 @@ public class PopularSearchService {
 
     /**
      * 검색검색어 DP 테이블로 저장된것 데이터 가져오기
+     * TODO 조회 로직 변경
      * @return
      */
     public RankResponse getRankData(){
@@ -44,6 +47,7 @@ public class PopularSearchService {
             dateTime = popularSearchOptional.get().getCreateDate();
         }
 
+        log.info("인기 검색어 조회");
         return RankResponse.of(dateTime, rankData);
     }
 }

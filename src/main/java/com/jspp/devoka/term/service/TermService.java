@@ -4,7 +4,6 @@ package com.jspp.devoka.term.service;
 import com.jspp.devoka.category.domain.Category;
 import com.jspp.devoka.category.service.CategoryService;
 import com.jspp.devoka.common.exception.ErrorCode;
-import com.jspp.devoka.history.domain.SearchHistory;
 import com.jspp.devoka.history.service.SearchHistoryService;
 import com.jspp.devoka.term.damain.Term;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
@@ -34,6 +33,8 @@ public class TermService {
 
     // 용어 Repository
     private final TermRepository termRepository;
+
+
     // 카테고리 서비스
     private final CategoryService categoryService;
     // 검색 이력 서비스
@@ -60,6 +61,7 @@ public class TermService {
         List<Term> content = findTermPage.getContent();
         List<TermResponse> list = content.stream().map(TermResponse::fromEntity).toList();
 
+        log.info("{} 카테고리 용어 리스트 조회", category.getCategoryName());
         // Term 리스트를 TermResponse로 변환하여 반환
         return TermListResponse.of(category.getCategoryId(), category.getCategoryName(), list);
     }
@@ -94,6 +96,8 @@ public class TermService {
             list.add(wrapListDto);
         }
 
+        log.info("모든 카테고리 용어 리스트 조회");
+        // Term 리스트를 List<TermResponse>로 변환하여 반환
         return list;
     }
 
@@ -128,6 +132,7 @@ public class TermService {
 
         // 검색 문자열 유효성 검사
         if(!validationKeyword(keyword)){
+            log.warn("사용자가 이상한 문자를 검색하였습니다. : {}", keyword);
             throw new InvalidSearchKeyword(ErrorCode.BAD_REQUEST_SEARCH_TERM);
         }
 
@@ -156,6 +161,8 @@ public class TermService {
             searchHistoryService.saveRequest(keyword, findList, responseData);
         }
 
+        log.info("사용자가 검색한 용어 : {}", keyword);
+        // 검색된 용어 TermSearchResponse로 변환하여 반환
         return responseData;
     }
 
@@ -212,6 +219,7 @@ public class TermService {
         // 랜덤 숫자 보다 같거나 큰 Random ID 값들을 랜덤으로 조회
         List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYnAndRandomValueGreaterThan(approvalYn, deleteYn, randomValue);
 
+        log.info("추천 용어 조회 개수 : {}", list.size());
         // Term 리스트를 TermResponse로 변환하여 반환
         return list.stream().map(TermResponse::fromEntity).toList();
     }

@@ -25,8 +25,10 @@ public class TermScheduler {
     public void popularSearchTermScheduler() {
         // 인기 검색어 추출
         List<RankData> rankData = searchHistoryService.popularTermExtract();
+        log.info("검색 이력에서 인기 검색어 추출");
 
         // 데이터 저장
         popularSearchService.save(rankData);
+        log.info("인기검색어 데이터 저장 완료");
     }
 }

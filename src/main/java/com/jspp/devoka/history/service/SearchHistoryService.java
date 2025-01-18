@@ -7,6 +7,7 @@ import com.jspp.devoka.term.damain.Term;
 import com.jspp.devoka.term.dto.response.TermSearchResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,6 +35,7 @@ public class SearchHistoryService {
      * @param findList
      * @param responseData
      */
+    @Async
     public void saveRequest(String keyword, List<Term> findList, List<TermSearchResponse> responseData) {
         String insertKeyword = keyword.trim().replaceAll("\\s+", " ").toLowerCase();  // 불필요한 공백 제거
 
@@ -43,7 +45,6 @@ public class SearchHistoryService {
             (term.getEngName() != null && term.getEngName().toLowerCase().contains(insertKeyword)) ||
             (term.getAbbName() != null && term.getAbbName().toLowerCase().contains(insertKeyword))
         );
-
 
         if(isValid){
             SearchHistory searchHistory = SearchHistory.create(keyword, responseData);
