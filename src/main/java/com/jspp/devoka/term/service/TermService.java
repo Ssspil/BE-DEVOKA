@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -133,7 +134,7 @@ public class TermService {
         // 검색 문자열 유효성 검사
         if(!validationKeyword(keyword)){
             log.warn("사용자가 이상한 문자를 검색하였습니다. : {}", keyword);
-            throw new InvalidSearchKeyword(ErrorCode.BAD_REQUEST_SEARCH_TERM);
+            return Collections.EMPTY_LIST;
         }
 
         // 네이티브 쿼리 이용해서 검색 조회
