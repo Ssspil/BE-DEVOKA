@@ -9,7 +9,6 @@ import com.jspp.devoka.term.damain.Term;
 import com.jspp.devoka.term.dto.request.TermCreateRequest;
 import com.jspp.devoka.term.dto.response.*;
 import com.jspp.devoka.term.dto.request.TermUpdateRequest;
-import com.jspp.devoka.term.exception.InvalidSearchKeyword;
 import com.jspp.devoka.term.exception.TermNotFoundException;
 import com.jspp.devoka.term.repository.TermRepository;
 import lombok.RequiredArgsConstructor;
@@ -207,18 +206,23 @@ public class TermService {
 
 
     /**
-     * 랜덤 추천 용어 20개
+     * 랜덤 추천 용어 10개
      * // TODO 랜덤 20개, 최신20개, 관리자 설정 등 할 수 있게 수정
      * @return
      */
     public List<TermResponse> recommendTermList(){
         String approvalYn = "Y";
         String deleteYn = "N";
-        // 1부터 1,000,000,000까지 랜덤 생성
-        int randomValue = ThreadLocalRandom.current().nextInt(1, 1_000_000_001);
+        // 1부터 500,000,000까지 랜덤 생성
+        int randomValue = ThreadLocalRandom.current().nextInt(1, 500_000_001);
+
 
         // 랜덤 숫자 보다 같거나 큰 Random ID 값들을 랜덤으로 조회
-        List<Term> list = termRepository.findRandomByApprovalYnAndDeleteYnAndRandomValueGreaterThan(approvalYn, deleteYn, randomValue);
+        List<Term> list = new ArrayList<>();
+        for(int i = 0; i < 5; i++){
+            list = termRepository.findRandomByApprovalYnAndDeleteYnAndRandomValueGreaterThan(approvalYn, deleteYn, randomValue);
+            if(list.size() == 10) break;
+        }
 
         log.info("추천 용어 조회 개수 : {}", list.size());
         // Term 리스트를 TermResponse로 변환하여 반환

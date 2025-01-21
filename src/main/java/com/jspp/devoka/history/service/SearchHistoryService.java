@@ -47,7 +47,7 @@ public class SearchHistoryService {
         );
 
         if(isValid){
-            SearchHistory searchHistory = SearchHistory.create(keyword, responseData);
+            SearchHistory searchHistory = SearchHistory.create(insertKeyword, responseData);
             this.save(searchHistory);
         }
     }
