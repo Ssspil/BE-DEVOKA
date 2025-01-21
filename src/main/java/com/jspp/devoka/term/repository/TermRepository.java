@@ -27,7 +27,7 @@ public interface TermRepository extends JpaRepository<Term, Long> {
           AND t.deleteYn = :deleteYn
           AND t.randomId >= :randomValue
         ORDER BY RANDOM()
-        LIMIT 20
+        LIMIT 10
     """)
     List<Term> findRandomByApprovalYnAndDeleteYnAndRandomValueGreaterThan(@Param("approvalYn") String approvalYn, @Param("deleteYn") String deleteYn, @Param("randomValue") int randomValue);
 
