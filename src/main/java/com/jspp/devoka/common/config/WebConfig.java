@@ -19,7 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         log.info("CORS DOMAIN ==> {} ",ALLOW_CROSS_ORIGIN_DOMAIN);
-        ALLOW_CROSS_ORIGIN_DOMAIN = "*";
         registry.addMapping("/**")
                 .allowedOrigins(ALLOW_CROSS_ORIGIN_DOMAIN)
                 .allowedMethods(ALLOW_METHODS)
