@@ -20,10 +20,9 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         log.info("CORS DOMAIN ==> {} ",ALLOW_CROSS_ORIGIN_DOMAIN);
         ALLOW_CROSS_ORIGIN_DOMAIN = "*";
-        log.info("CORS DOMAIN 변경 후 ==> {} ",ALLOW_CROSS_ORIGIN_DOMAIN);
-        log.info("CORS METHOD ==> {} ", ALLOW_METHODS);
         registry.addMapping("/**")
-                .allowedOrigins(ALLOW_CROSS_ORIGIN_DOMAIN)
+//                .allowedOrigins(ALLOW_CROSS_ORIGIN_DOMAIN)
+                .allowedOrigins("*")
                 .allowedMethods(ALLOW_METHODS)
                 .allowedHeaders("*")
                 .allowCredentials(true);
