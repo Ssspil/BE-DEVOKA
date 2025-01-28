@@ -1,10 +1,12 @@
 package com.jspp.devoka.common.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@Slf4j
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
@@ -16,6 +18,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        log.info("CORS DOMAIN ==> {} ",ALLOW_CROSS_ORIGIN_DOMAIN);
+        ALLOW_CROSS_ORIGIN_DOMAIN = "*";
+        log.info("CORS DOMAIN 변경 후 ==> {} ",ALLOW_CROSS_ORIGIN_DOMAIN);
+        log.info("CORS METHOD ==> {} ", ALLOW_METHODS);
         registry.addMapping("/**")
                 .allowedOrigins(ALLOW_CROSS_ORIGIN_DOMAIN)
                 .allowedMethods(ALLOW_METHODS)
