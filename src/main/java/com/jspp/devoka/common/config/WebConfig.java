@@ -21,8 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
         log.info("CORS DOMAIN ==> {} ",ALLOW_CROSS_ORIGIN_DOMAIN);
         ALLOW_CROSS_ORIGIN_DOMAIN = "*";
         registry.addMapping("/**")
-//                .allowedOrigins(ALLOW_CROSS_ORIGIN_DOMAIN)
-                .allowedOrigins("*")
+                .allowedOrigins(ALLOW_CROSS_ORIGIN_DOMAIN)
                 .allowedMethods(ALLOW_METHODS)
                 .allowedHeaders("*")
                 .allowCredentials(true);
