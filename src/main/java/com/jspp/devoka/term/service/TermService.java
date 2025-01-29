@@ -236,7 +236,7 @@ public class TermService {
      * @return
      */
     private boolean validationKeyword(String keyword){
-        String regexp = "^[a-zA-Z0-9가-힣\\s]*$";
+        String regexp = "^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]*$";
 
         if (keyword == null || keyword.isEmpty()) {
             return false; // 키워드가 null이거나 빈 값이면 false 반환
