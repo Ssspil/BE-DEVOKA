@@ -11,14 +11,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     @Value("${spring.security.cors.allowed-origins}")
-    private String  ALLOW_CROSS_ORIGIN_DOMAIN;
+    private String[]  ALLOW_CROSS_ORIGIN_DOMAIN;
 
     @Value("${spring.security.cors.allowed-methods}")
     private String[] ALLOW_METHODS;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        log.info("허용 도메인 : {}", ALLOW_CROSS_ORIGIN_DOMAIN);
+        for (String domain : ALLOW_CROSS_ORIGIN_DOMAIN) {
+            log.info("허용 도메인 : {}", domain);
+        }
         registry.addMapping("/**")
                 .allowedOrigins(ALLOW_CROSS_ORIGIN_DOMAIN)
                 .allowedMethods(ALLOW_METHODS)
