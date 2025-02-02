@@ -19,10 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.text.Collator;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -59,7 +57,10 @@ public class TermService {
         Page<Term> findTermPage = termRepository.findByCategory_CategoryIdAndDeleteYnAndApprovalYn(categoryId, deleteYn, approvalYn, pageable);
 
         List<Term> content = findTermPage.getContent();
-        List<TermResponse> list = content.stream().map(TermResponse::fromEntity).toList();
+        List<TermResponse> list = content.stream()
+                .map(TermResponse::fromEntity)
+                .sorted(Comparator.comparing(TermResponse::getKorName, Collator.getInstance(Locale.KOREAN)))
+                .toList();
 
         log.info("{} 카테고리 용어 리스트 조회", category.getCategoryName());
         // Term 리스트를 TermResponse로 변환하여 반환
@@ -90,7 +91,11 @@ public class TermService {
             // 진짜 데이터
             List<Term> content = findTermPage.getContent();
             // Dto로 변경
-            List<TermResponse> listDto = content.stream().map(TermResponse::fromEntity).toList();
+            List<TermResponse> listDto = content.stream()
+                    .map(TermResponse::fromEntity)
+                    .sorted(Comparator.comparing(TermResponse::getKorName, Collator.getInstance(Locale.KOREAN)))
+                    .toList();
+
             // list화
             TermListResponse wrapListDto = TermListResponse.of(category.getCategoryId(), category.getCategoryName(), listDto);
             list.add(wrapListDto);
